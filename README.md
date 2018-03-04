@@ -94,4 +94,4 @@ Add MEC to your project
 const mec = require('mec')
 mec.init("1234")
 ```
-### [API reference](https://github.com/MEC-org/nodejs-MEC/wiki)
+### [API reference](https://github.com/MEC-org/nodejs-MEC/wiki/MEC-JavaScript-API)
