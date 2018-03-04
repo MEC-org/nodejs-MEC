@@ -26,7 +26,25 @@ let fromHex = function(hexx) {
   return str.replace(/\u0000/g, '');
 }
 
+let nameToEnode = (name)=>{
+  for(let i=0; i<keys.AVAILABLE_NETWORKS.length; i++) {
+    if(keys.AVAILABLE_NETWORKS[i].name == name) {
+      return keys.AVAILABLE_NETWORKS[i].enode;
+    }
+  }
+}
+
+let nodeToName = (node)=>{
+  for(let i=0; i<keys.AVAILABLE_NETWORKS.length; i++) {
+    if(keys.AVAILABLE_NETWORKS[i].enode == node) {
+      return keys.AVAILABLE_NETWORKS[i].name;
+    }
+  }
+}
+
 module.exports = {
 	fromHex,
-	Storage
+	Storage,
+  nameToEnode,
+  nodeToName
 }

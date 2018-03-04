@@ -6,6 +6,7 @@ var ipc = []
 
 ports = 8544;
 discovery = 30302;
+chainId = 1092015;
 
 
 const txpool = {
@@ -14,30 +15,24 @@ const txpool = {
 
 let AVAILABLE_NETWORKS = [];
 
+
 let CP = {
   Getter: '',
-  Current: ''
+  Password: ''
 }
 
 let CUSTOM_NODES = []
 
-// let node = {
-//   id: '',
-//   gas: 100000000,
-//   account: '',
-//   adminPage: '',
-//   localId:'',
-//   localChainId: '',
-//   localChainAccount:'',
-// }
 
 let lastSession = {
   getterAddress:'',
   getterABI: ''
 };
 
+
 module.exports = {
 	txpool,
+	chainId,
 	AVAILABLE_NETWORKS,
 	CP,
 	CUSTOM_NODES,

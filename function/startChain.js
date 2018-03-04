@@ -7,14 +7,6 @@ const tx = require('../utils/tx.js')
 const utils = require('../utils/utils.js')
 
 
-function eth(chainId, dataFolder) {
-  let options = {
-    chainId: chainId,
-    dataFolder: dataFolder
-  }
-  new Eth(options)
-}
-
 let myChain;
 
 
@@ -43,16 +35,18 @@ keys.infura = Web3Gen.newRemoteProvider(infura_kovan);
   Add functions to catch update event in subnet and
   rewrite CP.Getter variable with new ABI and address
   *  * * * * * * * * * * * * * * * * * * * * * * * * * * **/
-function init (){
+function init (password){
   if (!keys.lastSession.getterAddress) {
     let abi = require('../build/contracts/MEC.json');
     let getter = keys.infura.eth.contract(abi);
     keys.CP.Getter = getter.at('0xce3420889e6e07a44b96cc34371b4a72bded8223');
     // resolve(true);
+    keys.CP.Password = password;
   } else {
     let getter = keys.infura.eth.contract(lastSession.getterABI);
     keys.CP.Getter = getter.at(lastSession.getterAddress);
     // resolve(true);
+    keys.CP.Password = password;
   }
 }
 
@@ -146,10 +140,10 @@ function setIpcProvider(path) {
   return Web3Gen.newIPCProvider(path);
 }
 
-function start(network, chainId) {
+function start(network) {
   return new Promise((resolve,reject)=>{
     utils.Storage(network).then(()=>{
-      initMEC(network, chainId, true).then(()=>{
+      initMEC(network, keys.chainId, true).then(()=>{
         
         resolve(true);
       })
@@ -163,7 +157,7 @@ function start(network, chainId) {
           For newly created chains I must import account,
           wait until chain data will be ready and then continue
         */
-        initMEC(network, chainId, true).then(()=>{
+        initMEC(network, keys.chainId, true).then(()=>{
           resolve(true);
         })
         .catch((err)=>{
@@ -191,10 +185,10 @@ function initMEC(network, chainId, rpc) {
       let path = `.chainData/${network}/./MEC.ipc`
 
       keys.ipc[network] = setIpcProvider(path)
-
+      
       cons.connectConsortium(
         cons.consortium_params(
-          enode(network),
+          utils.nameToEnode(network),
           network,
           ports,
           `http://localhost:${ports}`
@@ -211,23 +205,10 @@ function initMEC(network, chainId, rpc) {
   });
 }
 
-let enode = (name)=>{
-  for(let i=0; i<keys.AVAILABLE_NETWORKS.length; i++) {
-    if(keys.AVAILABLE_NETWORKS[i].name == name) {
-      return keys.AVAILABLE_NETWORKS[i].enode;
-    }
-  }
-}
-
-
 module.exports = {
   init,
-  getNetworks,
   getInterface,
-  // prepeareNetworksObject,
-  setIpcProvider,
   start,
   search,
-  enode,
-  eth
+  setIpcProvider
 }

@@ -3,6 +3,9 @@
   in order to import account to new sub-net
  * * * * * ** * * * * * * * * * * * * * * * *  * * */
 var ncp = require('ncp').ncp;
+const k = require('../appStructure/keyElements.js')
+
+let accounts;
 
 ncp.limit = 16;
 
@@ -26,7 +29,31 @@ function createAccount(ipc) {
   });
 }
 
+function unlockAcc(ipc, acc, pass) {
+  return new Promise((r,e)=>{
+    ipc.personal.unlockAccount(acc, pass, (err,res)=>{
+      if(err) {console.log(err); e(err);}
+      else {
+        console.log(res);
+        ipc.settings.defaultAccount = acc;
+        r(res);
+      }
+    })
+  });
+}
+
+function myAcc(name) {
+  return new Promise((r,e)=>{
+    k.ipc[name].eth.accounts[0]((err,res)=>{
+      if(err) e(err);
+      else r(res);
+    })
+  })
+}
+
 module.exports = {
 	createAccount,
-	importAccount
+	importAccount,
+  unlockAcc,
+  accounts
 }

@@ -26,10 +26,8 @@ function connectConsortium(params) {
     let who = params.network;
     console.log(params)
 
-
     let net = getNetObjByName(who)
 
-    // setting remote provider, change to local
     chain = m.newWeb3Provider(params.server).eth;
     
     tx.init_tx(keys.ipc[who]);
@@ -37,13 +35,20 @@ function connectConsortium(params) {
     p.listener(who)
 
     let acc = chain.accounts;
+    
+    manager.accounts = acc;
 
     if(!acc.length) {
       manager.createAccount(keys.ipc[who])
-        .then((r)=>{ console.log(r); })
-        .catch((e)=>{ console.log(e) });
+        .then(r=>{ console.log(r); })
+        .catch(e=>{ console.log(e) });
     }
     console.log(acc);
+
+    // last param - 43200 is 12h unlock 
+    manager.unlockAcc(keys.ipc[who], acc[0], keys.CP.Password)
+      .then(r=>{ console.log(r, "49") })
+      .catch(e=>{ console.log(e) })
 
     if(!params.node) {
       r(true);
@@ -54,14 +59,23 @@ function connectConsortium(params) {
       else {
         console.log(`INFO: Successfully connected to ${params.node}`);
         console.log(net.address)
-        setTimeout(()=>{console.log(net.abi)}, 2000);
+        
         getConsortiumService(chain, net.address, net.abi)
           .then((service)=>{
-            tx.send_BC_tx(service,"name",'',0,1).then(name=>{
+
+            // tx.use(service, "signup", "Bogdan", 0, 1).then(suc=>{
+            //   console.log(suc);
+            // }).catch(err=>{console.log(err)});
+
+            tx.use(service,"name",'',0,1).then(name=>{
               console.log(name)
+
               prepeareCustomNodeObject({
-                name:name, chainClient:chain, service:service
+                name:name,
+                chainClient:keys.ipc[who],
+                service:service
               });
+
               r(true)             
             })
         })
@@ -73,11 +87,10 @@ function connectConsortium(params) {
 }
 
 function prepeareCustomNodeObject(data) {
-  keys.CUSTOM_NODES.push({
-    name: data.name,
+  keys.CUSTOM_NODES[data.name] = {
     chainClient: data.chainClient,
     service: data.service
-  });
+  };
 }
 
 function getConsortiumService(chain, address, abi) {
@@ -104,11 +117,11 @@ function prepeareServiceObject(net, getter) {
   return new Promise((resolve,reject)=>{
     let abi, address;
 
-    // console.log(tx.send_BC_tx());
-    tx.send_BC_tx(getter,"_adr", '', 0, 0).then(addr=>{
+    // console.log(tx.use());
+    tx.use(getter,"_adr", '', 0, 0).then(addr=>{
       address =  addr;
     });
-    tx.send_BC_tx(getter,'abidata', '', 0, 1).then(int=>{
+    tx.use(getter,'abidata', '', 0, 1).then(int=>{
       abi = int;
     });
 

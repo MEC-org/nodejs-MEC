@@ -1,4 +1,5 @@
 const keys = require('../appStructure/keyElements.js')
+const man = require('./accManag.js')
 
 let ipc;
 
@@ -8,7 +9,7 @@ function init_tx(net){
 }
 
 
-function send_BC_tx (obj, method, input, toDec, toAscii){
+function use (obj, method, input, toDec, toAscii){
   return new Promise((resolve,reject)=>{
     EXEC_PROMISE_BC_METHOD(obj, method, input, toDec, toAscii)
       .then((result)=>{ resolve(result) })
@@ -22,7 +23,10 @@ function send_BC_tx (obj, method, input, toDec, toAscii){
 let EXEC_PROMISE_BC_METHOD = (obj, method, input, toDec, toAscii)=>{
   return new Promise((r,e)=>{
     if(input != '') {
-      obj[method](input, (err,res)=>{
+      obj[method](input, {
+        from: acc()        
+      }, (err,res)=>{
+        console.log(err,res)
         if(res) {
           if(toDec) r(ipc.toDecimal(res));
           else if(toAscii) r(ipc.toAscii(res));
@@ -31,7 +35,10 @@ let EXEC_PROMISE_BC_METHOD = (obj, method, input, toDec, toAscii)=>{
         else console.log(err);
       });
     }
-    obj[method]((err,res)=>{ 
+    obj[method]({
+        from: acc()  
+    }, (err,res)=>{ 
+      console.log(err,res)
       if(res) {
         if(toDec) r(ipc.toDecimal(res));
         else if(toAscii) r(ipc.toAscii(res));
@@ -42,7 +49,11 @@ let EXEC_PROMISE_BC_METHOD = (obj, method, input, toDec, toAscii)=>{
   });
 }
 
+let acc = ()=>{
+  man.accounts[0]
+}
+
 module.exports = {
   init_tx,
-  send_BC_tx
+  use
 }
