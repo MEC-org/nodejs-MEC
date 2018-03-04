@@ -6,9 +6,10 @@ The official repository for mec npm package. The mec package is designed to quic
 ```JavaScript
 const mec = require('mec')
 
-mec.init()
+// mec.layer.init(your_password), by default set to 1234
+mec.layer.init("1234")
 
-mec.startLayer.search("signup")
+mec.layer.search("signup")
 ```
 Response contains interface needed to start new sub-network connection:
 ```JSON
@@ -33,7 +34,7 @@ Response contains interface needed to start new sub-network connection:
 ```
 ### Globaly available sub-networks
 ```JavaScript
-mec.startLayer.getInterface()
+mec.layer.getInterface()
 ```
 Response contains all available sub-networks interfaces:
 ```JSON
@@ -53,7 +54,8 @@ Response contains all available sub-networks interfaces:
 About abi you can read at [Ethereum ABI](https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI).
 ### Starting new connection
 ```JavaScript
-mec.startLayer.start("signup", 1092015)
+mec.layer.start("signup")
+// mec.layer.start(name_of_subnet_you_connecting)
 ```
 Successfull response means that now you can interact with sub-network applications over http/ipc/API
 ```
@@ -63,7 +65,8 @@ INFO: Ready: true
 ```
 ### Or your may create your own sub-network blockchain:
 ```JavaScript
-mec.newLayer.createMyChain("my")
+mec.newLayer("my")
+// the name you set will be used to find you globaly
 ```
 Successfull response means that now you can develop or anything else with your own sub-network blockchain.
 * at development newly created sub-networks can't be found outside your computer
@@ -89,6 +92,6 @@ npm install mec@0.1.0
 Add MEC to your project
 ```JavaScript
 const mec = require('mec')
-mec.init()
+mec.init("1234")
 ```
 ### [API reference](https://github.com/MEC-org/nodejs-MEC/wiki)
