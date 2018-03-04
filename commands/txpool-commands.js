@@ -23,7 +23,6 @@ function forEach(data, callback) {
 
 function content(node) {
 	return new Promise((r,e)=>{
-		console.log(node)
 		execute(`echo '{"jsonrpc":"2.0","method":"txpool_content","params":[],"id":1092015}' | nc -U .chainData/${node}/./MEC.ipc`).then((result)=>{
 			r(result);
 		})
