@@ -26,7 +26,6 @@ let EXEC_PROMISE_BC_METHOD = (obj, method, input, toDec, toAscii)=>{
       obj[method](input, {
         from: acc()        
       }, (err,res)=>{
-        console.log(err,res)
         if(res) {
           if(toDec) r(ipc.toDecimal(res));
           else if(toAscii) r(ipc.toAscii(res));
@@ -38,7 +37,6 @@ let EXEC_PROMISE_BC_METHOD = (obj, method, input, toDec, toAscii)=>{
     obj[method]({
         from: acc()  
     }, (err,res)=>{ 
-      console.log(err,res)
       if(res) {
         if(toDec) r(ipc.toDecimal(res));
         else if(toAscii) r(ipc.toAscii(res));
