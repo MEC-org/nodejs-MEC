@@ -12,22 +12,22 @@ mec.startLayer.search("signup")
 ```
 ### Response contains interface needed to start new sub-network connection:
 ```JSON
-> Object {
-  name: "signup",
-  enode: "enode://b61f72cb88eed0ea9c2214492186a473774a8a9bb3…38cc9d0230a81d8fde59724ea313fa@212.20.41.42:30303",
-  address: "0xeac784b35b697740a3dc17ec59247749cc298c37",
-  abi: [
-    0: Object {
-      constant:true,
-      inputs:Array[0],
-      name:"abidata",
-      outputs:Array[1],
-      payable:false,
-      stateMutability:"view",
-      type:"function"
+{
+  "name": "signup",
+  "enode": "enode://b61f72cb88eed0ea9c2214492186a473774a8a9bb3…38cc9d0230a81d8fde59724ea313fa@212.20.41.42:30303",
+  "address": "0xeac784b35b697740a3dc17ec59247749cc298c37",
+  "abi": [
+    "0": {
+      "constant":true,
+      "inputs":Array[0],
+      "name":"abidata",
+      "outputs":Array[1],
+      "payable":false,
+      "stateMutability":"view",
+      "type":"function"
     }, 
-    1: { ... },
-    2: { ... }
+    "1": {},
+    "2": {}
 ```
 
 ## Globaly available sub-networks
