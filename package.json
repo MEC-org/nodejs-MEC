@@ -1,0 +1,43 @@
+{
+  "name": "mec",
+  "version": "0.0.5",
+  "description": "This package helps to create multi-layer chains upon Ethereum Network. Also it provides easy to use nodejs API to any of consortium network and helps to manage all of them at the same time",
+  "main": "mec.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Blockchain",
+    "Ethereum",
+    "Consortium",
+    "Network",
+    "Networks",
+    "Corda",
+    "Hyperledger",
+    "Blockchain",
+    "Nodejs",
+    "Tooneling",
+    "DAPPS",
+    "Offchain",
+    "Layer",
+    "Chain"
+  ],
+  "author": {
+    "name": "Sizov Bogdan",
+    "email": "sizov.workingbox@gmail.com",
+    "url": ""
+  }
+  {"license": "LGPL-3.0"},
+  "dependencies": {
+    "ncp": "^2.0.0",
+    "node-deb": "^0.10.4",
+    "ps-node": "^0.1.6",
+    "ps-tree": "^1.1.0",
+    "web3": "^0.20.0",
+    "web3_ipc": "^1.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MEC-org/nodejs-MEC.git"
+  }
+}
