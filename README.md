@@ -38,8 +38,8 @@ mec.startLayer.getInterface()
 Response contains all available sub-networks interfaces:
 ```JSON
 [
-  { 
-    "abi": [3], // 
+  {
+    "abi": [3], 
     "address": "0xeac784b35b697740a3dc17ec59247749cc298c37",
     "enode": "enode://b61f72cb88eed0ea9c2214492186a473774a8a9bb318194ac38d3900062a11a0b48d1a4e8d36e04432c2e287e485f2f30a38cc9d0230a81d8fde59724ea313fa@212.20.41.42:30303",
     "name": "signup"
@@ -65,7 +65,7 @@ INFO: Ready: true
 ```
 ### Or your may create your own sub-network blockchain:
 ```JavaScript
-mec.newLayer.creaeteMyChain("my")
+mec.newLayer.createMyChain("my")
 ```
 Successfull response means that now you can develop or anything else with your own sub-network blockchain.
 * at development newly created sub-networks can't be found outside your computer
@@ -93,7 +93,4 @@ Add MEC to your project
 const mec = require('mec')
 mec.init()
 ```
-### API reference
-#### mec.init
-
- 
+### [API reference](https://github.com/MEC-org/nodejs-MEC/wiki)
