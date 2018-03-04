@@ -8,7 +8,7 @@ ncp.limit = 16;
 
 function importAccount(newChain) {
   ncp(
-    `.chainData/main/keystore/`,
+    `.chainData/signup/keystore/`,
     `.chainData/${newChain}/keystore/`,
     (err)=>{ 
       if(err) return console.log(err) 

@@ -11,9 +11,9 @@ function createMyChain(name) {
 			k.ports++;
 			k.discovery++;
 			m.Client(name, chainId, k.ports, k.discovery, true).then(res=>{
-				let path = `.chainDatcd a/${name}/./MEC.ipc`
+				let path = `.chainData/${name}/./MEC.ipc`
 				k.ipc[name] = s.setIpcProvider(path)
-				nodec.connectConsortium(
+				c.connectConsortium(
 			        c.consortium_params(
 			          s.enode(name),
 			          name,

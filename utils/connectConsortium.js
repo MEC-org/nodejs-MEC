@@ -23,10 +23,13 @@ function getNetObjByName(name) {
 
 function connectConsortium(params) {
   return new Promise((r,e)=>{
-
     let who = params.network;
+    console.log(params)
+
+
     let net = getNetObjByName(who)
 
+    // setting remote provider, change to local
     chain = m.newWeb3Provider(params.server).eth;
     
     tx.init_tx(keys.ipc[who]);
@@ -41,6 +44,10 @@ function connectConsortium(params) {
         .catch((e)=>{ console.log(e) });
     }
     console.log(acc);
+
+    if(!params.node) {
+      r(true);
+    }
 
     keys.ipc[who].admin.addPeer(params.node, (err,res)=>{
       if(err) e(err);

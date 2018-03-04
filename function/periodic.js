@@ -3,7 +3,7 @@ const pool = require('../commands/txpool-commands.js')
 
 let listener = (name)=>{
 	setInterval(() => {
-	  	let a = new pool(k.ipc[name])
+	  	let a = new pool(name)
 	  	pool.content
 		  	.then(res=>{
 		  		if(res) k.ipc[name].miner.start(1,(err,res)=>{console.log = function() {}})

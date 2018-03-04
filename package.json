@@ -1,6 +1,6 @@
 {
   "name": "mec",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "This package helps to create multi-layer chains upon Ethereum Network. Also it provides easy to use nodejs API to any of consortium network and helps to manage all of them at the same time",
   "main": "mec.js",
   "scripts": {
@@ -26,8 +26,8 @@
     "name": "Sizov Bogdan",
     "email": "sizov.workingbox@gmail.com",
     "url": ""
-  }
-  {"license": "LGPL-3.0"},
+  },
+  "license": "LGPL-3.0",
   "dependencies": {
     "ncp": "^2.0.0",
     "node-deb": "^0.10.4",
