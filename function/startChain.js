@@ -143,9 +143,9 @@ function setIpcProvider(path) {
 function start(network) {
   return new Promise((resolve,reject)=>{
     utils.Storage(network).then(()=>{
-      initMEC(network, keys.chainId, true).then(()=>{
-        
-        resolve(true);
+      initMEC(network, keys.chainId, true).then(mes=>{
+        console.log(mes)
+        resolve(mes);
       })
       .catch((err)=>{
         console.log(err);
@@ -157,8 +157,8 @@ function start(network) {
           For newly created chains I must import account,
           wait until chain data will be ready and then continue
         */
-        initMEC(network, keys.chainId, true).then(()=>{
-          resolve(true);
+        initMEC(network, keys.chainId, true).then(mes=>{
+          resolve(mes);
         })
         .catch((err)=>{
           console.log(err);
@@ -194,8 +194,8 @@ function initMEC(network, chainId, rpc) {
           `http://localhost:${ports}`
         )
       )
-      .then(()=>{
-        resolve(true);
+      .then(mes=>{
+        resolve(mes);
        })
       .catch((err)=>{
         console.log("ERROR: Some error with adding peer. Try to debug, input data: " + enode);

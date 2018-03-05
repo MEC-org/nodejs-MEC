@@ -1,8 +1,9 @@
 const m = require('./Makers.js')
 const keys = require('../appStructure/keyElements.js');
-const tx = require('./tx.js')
+const Tx = require('./tx.js').TX
 const manager = require('./accManag.js')
 const p = require('../function/periodic.js')
+const App = require('../function/appConfigs.js').APP
 
 let consortium_params = (node, network, ports, server)=>{
   return consortium_params = {
@@ -29,8 +30,6 @@ function connectConsortium(params) {
     let net = getNetObjByName(who)
 
     chain = m.newWeb3Provider(params.server).eth;
-    
-    tx.init_tx(keys.ipc[who]);
 
     p.listener(who)
 
@@ -63,21 +62,21 @@ function connectConsortium(params) {
         getConsortiumService(chain, net.address, net.abi)
           .then((service)=>{
 
-            // tx.use(service, "signup", "Bogdan", 0, 1).then(suc=>{
-            //   console.log(suc);
-            // }).catch(err=>{console.log(err)});
+            // Setting CUSTOM_NODE
+            prepeareCustomNodeObject({
+              name: who,
+              chainClient: keys.ipc[who],
+              service: service
+            });
 
-            tx.use(service,"name",'',0,1).then(name=>{
-              console.log(name)
+            // init new app class
+            let app = new App("signup");
+            // initialize tx class
+            let tx = new Tx(app)
 
-              prepeareCustomNodeObject({
-                name:name,
-                chainClient:keys.ipc[who],
-                service:service
-              });
-
-              r(true)             
-            })
+            let rep = tx.use("name", '')
+            console.log(`INFO: Successfully connected to ${rep}`)
+            r(true);
         })
         .catch((err)=>{console.log(err)})
       }
@@ -98,12 +97,18 @@ function getConsortiumService(chain, address, abi) {
 
     let getter = chain.contract(abi).at(address);
 
+    prepeareCustomNodeObject({
+      name: 'getter',
+      chainClient: chain,
+      service: getter
+    });
+
     let creator = ()=>{
-      prepeareServiceObject(chain, getter)  
+      prepeareServiceObject()  
         .then((res)=>{
           let abi = JSON.parse(res[0]);
           let app = chain.contract(abi).at(res[1]);
-          setTimeout(()=>{resolve(app);}, 1000)
+          setTimeout(()=>{resolve(app);}, 500)
         })
         .catch((err)=>{ throw err });
     }
@@ -113,15 +118,19 @@ function getConsortiumService(chain, address, abi) {
   });
 }
 
-function prepeareServiceObject(net, getter) {
+function prepeareServiceObject() {
   return new Promise((resolve,reject)=>{
     let abi, address;
 
+    let getter = new App('getter')
+
+    let tx = new Tx(getter)
+
     // console.log(tx.use());
-    tx.use(getter,"_adr", '', 0, 0).then(addr=>{
+    tx.use("_adr", '').then(addr=>{
       address =  addr;
     });
-    tx.use(getter,'abidata', '', 0, 1).then(int=>{
+    tx.use('abidata', '').then(int=>{
       abi = int;
     });
 
