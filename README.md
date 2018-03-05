@@ -87,7 +87,7 @@ INFO: Ready: true
  ```
 ### Instalation
 ```
-npm install mec@0.1.0
+npm install mec@0.1.2
 ```
 Add MEC to your project
 ```JavaScript

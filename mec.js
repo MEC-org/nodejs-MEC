@@ -7,8 +7,9 @@ const tx = require('./utils/tx.js');
 const utils = require('./utils/utils.js')
 const accounts = require('./utils/accManag.js')
 
-const app = require('./function/app,cli.js').APP;
-const node = require('./function/app,cli.js').CLI;
+const app = require('./function/appConfigs.js').APP;
+const node = require('./function/appConfigs.js').CLI;
+
 
 module.exports={
 	layers,
