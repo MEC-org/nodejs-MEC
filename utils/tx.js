@@ -22,7 +22,7 @@ class TX {
 let EXEC_PROMISE_BC_METHOD = (service, method, input)=>{
   return new Promise((r,e)=>{
     if(input != '') {
-      service.app[method](inputs, { from: acc() }, (err,res)=>{ 
+      service.app[method](input, { from: acc() }, (err,res)=>{ 
         if(res) {
           let abi = service.howTo(method);
           // if user pass input but it don't needs
