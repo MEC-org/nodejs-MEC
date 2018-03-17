@@ -1,7 +1,5 @@
 # nodejs-MEC
-<<<<<<< HEAD
-The official repository for MEC npm package. The MEC package is designed to quickly deploy a MEC client in a nodejs application and quickly integrate with any service from a decentralized MEC network
-=======
+
 The official repository for mec npm package. The mec package is designed to quickly deploy a MEC client in a nodejs application and quickly integrate with any service from a decentralized MEC network
 
 # Use-case
@@ -90,7 +88,7 @@ INFO: Ready: true
  ```
 ### Instalation
 ```
-npm install mec@0.1.3
+npm install mec@0.1.4
 
 ```
 Add MEC to your project
