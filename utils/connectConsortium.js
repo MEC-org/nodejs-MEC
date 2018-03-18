@@ -33,11 +33,10 @@ function connectConsortium(params) {
 
     p.listener(who)
 
-    let acc = Accounts(chain, "1234", who)
+    let old = keys.accounts.password
+    let acc = Accounts(chain, old, who)
     keys.accounts = acc;
     console.log(acc.my());
-
-    // manager.accounts = acc;
 
     if(typeof(acc.my()) == 'undefined') {
       acc.createAccount()
@@ -123,10 +122,8 @@ function prepeareServiceObject() {
     let abi, address;
 
     let getter = new App('getter')
-
     let tx = new Tx(getter)
-    // console.log(getter,tx)
-    // console.log(tx.use());
+
     tx.use("_adr", '').then(addr=>{
       address =  addr;
     });
