@@ -1,7 +1,7 @@
 const m = require('./Makers.js')
 const keys = require('../appStructure/keyElements.js');
 const Tx = require('./tx.js').TX
-const manager = require('./accManag.js')
+const Accounts = require('./accManag.js').Accounts
 const p = require('../function/periodic.js')
 const App = require('../function/appConfigs.js').APP
 
@@ -33,19 +33,19 @@ function connectConsortium(params) {
 
     p.listener(who)
 
-    let acc = chain.accounts;
-    
-    manager.accounts = acc;
+    let acc = Accounts(chain, "1234", who)
+    keys.accounts = acc;
+    console.log(acc.my());
 
-    if(!acc.length) {
-      manager.createAccount(keys.ipc[who])
+    // manager.accounts = acc;
+
+    if(typeof(acc.my()) == 'undefined') {
+      acc.createAccount()
         .then(r=>{ console.log(r); })
         .catch(e=>{ console.log(e) });
     }
-    console.log(acc);
 
-    // last param - 43200 is 12h unlock 
-    manager.unlockAcc(keys.ipc[who], acc[0], keys.CP.Password)
+    acc.unlockAcc()
       .then(r=>{ console.log(r, "49") })
       .catch(e=>{ console.log(e) })
 
@@ -58,7 +58,7 @@ function connectConsortium(params) {
       else {
         console.log(`INFO: Successfully connected to ${params.node}`);
         console.log(net.address)
-        
+
         getConsortiumService(chain, net.address, net.abi)
           .then((service)=>{
 
@@ -104,7 +104,7 @@ function getConsortiumService(chain, address, abi) {
     });
 
     let creator = ()=>{
-      prepeareServiceObject()  
+      prepeareServiceObject()
         .then((res)=>{
           let abi = JSON.parse(res[0]);
           let app = chain.contract(abi).at(res[1]);
@@ -125,7 +125,7 @@ function prepeareServiceObject() {
     let getter = new App('getter')
 
     let tx = new Tx(getter)
-
+    // console.log(getter,tx)
     // console.log(tx.use());
     tx.use("_adr", '').then(addr=>{
       address =  addr;
@@ -136,7 +136,7 @@ function prepeareServiceObject() {
 
     setTimeout(()=>{
       resolve([abi,address])
-    }, 100);
+    }, 1000);
 
   });
 }

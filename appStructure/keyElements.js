@@ -8,6 +8,7 @@ ports = 8544;
 discovery = 30302;
 chainId = 1092015;
 
+let accounts;
 
 const txpool = {
 

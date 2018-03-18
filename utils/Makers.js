@@ -1,6 +1,7 @@
 const exec = require('child_process').exec;
 const Web3Gen = require('./Web3Generator.js');
-const manager = require('./accManag.js')
+// const manager = require('./accManag.js').Accounts
+const keys = require('../appStructure/keyElements.js')
 const path = "./node_modules/mec/"
 // const fs = require('fs');
 
@@ -10,7 +11,8 @@ function Chain(network) {
     execute(init).then((log)=>{
       console.log(log);
       console.log('Successfully created new chain folder')
-      manager.importAccount(network)
+      // not importing account and this time
+      keys.accounts.importAccount(network)
       resolve(true);
     })
     .catch((err)=>{
@@ -35,13 +37,13 @@ function Client(network, chainId, port, discovery, rpcswitch) {
 }
 
 function newWeb3Provider(path) {
-  return Web3Gen.newRemoteProvider(path) 
+  return Web3Gen.newRemoteProvider(path)
 }
 
 function execute(command){
   return new Promise((resolve,reject)=>{
-    exec(command, function(error, stdout, stderr){ 
-      if(error) reject(error); 
+    exec(command, function(error, stdout, stderr){
+      if(error) reject(error);
       else if(stdout) resolve(stdout);
       else if(stderr) resolve(stderr);
     });

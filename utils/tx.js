@@ -1,5 +1,4 @@
 const keys = require('../appStructure/keyElements.js')
-const man = require('./accManag.js')
 const utils = require('./utils.js')
 
 class TX {
@@ -21,8 +20,9 @@ class TX {
 // method or correct input is executing
 let EXEC_PROMISE_BC_METHOD = (service, method, input)=>{
   return new Promise((r,e)=>{
+    // console.log(keys.accounts.my());
     if(input != '') {
-      service.app[method](input, { from: acc() }, (err,res)=>{ 
+      service.app[method](input, { from: keys.accounts.my() }, (err,res)=>{
         if(res) {
           let abi = service.howTo(method);
           // if user pass input but it don't needs
@@ -40,7 +40,7 @@ let EXEC_PROMISE_BC_METHOD = (service, method, input)=>{
             } else {
               // if several elements at response
               let response = [];
-              for(var i=0; i<out.length; i++){ 
+              for(var i=0; i<out.length; i++){
                 response.push(prepeareResponse(out[i], res[i]))
               }
               r(response)
@@ -49,7 +49,7 @@ let EXEC_PROMISE_BC_METHOD = (service, method, input)=>{
         } else e(err)
       });
     } else {
-      service.app[method]({ from: acc() }, (err,res)=>{ 
+      service.app[method]({ from: keys.accounts.my() }, (err,res)=>{
         if(res) {
           let abi = service.howTo(method);
           // if user pass input but it don't needs
@@ -59,7 +59,7 @@ let EXEC_PROMISE_BC_METHOD = (service, method, input)=>{
           if(!abi.outputs.length) r(res);
           else {
             let out = abi.outputs;
-            console.log(out)
+
             // if only 1 element at response
             if(out.length == 1) {
               r(prepeareResponse(out[0], res));
@@ -67,7 +67,7 @@ let EXEC_PROMISE_BC_METHOD = (service, method, input)=>{
             } else {
               // if several elements at response
               let response = [];
-              for(var i=0; i<out.length; i++){ 
+              for(var i=0; i<out.length; i++){
                 response.push(prepeareResponse(out[i], res[i]))
               }
               r(response)
@@ -80,7 +80,7 @@ let EXEC_PROMISE_BC_METHOD = (service, method, input)=>{
 }
 
 let prepeareResponse = (em, value) => {
-  
+
     if(em.type.includes('uint'))
       return keys.ipc[0].toDecimal(value);
 
@@ -95,10 +95,6 @@ let prepeareResponse = (em, value) => {
 
     else if(em.type == 'address')
       return value;
-}
-
-let acc = ()=>{
-  return man.accounts[0]
 }
 
 module.exports = {

@@ -5,7 +5,7 @@ const mng = require('./appStructure/keyElements.js');
 const tx = require('./utils/tx.js').TX
 // const cli = require('./commands/eth-commands.js');
 const utils = require('./utils/utils.js')
-const accounts = require('./utils/accManag.js')
+const accounts = require('./utils/accManag.js').Accounts
 
 const app = require('./function/appConfigs.js').APP;
 const node = require('./function/appConfigs.js').CLI;
