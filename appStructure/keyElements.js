@@ -17,7 +17,7 @@ const txpool = {
 let AVAILABLE_NETWORKS = [];
 
 
-let CP = {
+let _INIT = {
   Getter: '',
   Password: ''
 }
@@ -25,17 +25,11 @@ let CP = {
 let CUSTOM_NODES = []
 
 
-let lastSession = {
-  getterAddress:'',
-  getterABI: ''
-};
-
-
 module.exports = {
 	txpool,
 	chainId,
 	AVAILABLE_NETWORKS,
-	CP,
+  _INIT,
 	CUSTOM_NODES,
 	lastSession,
 	infura,

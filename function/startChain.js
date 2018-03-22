@@ -32,34 +32,28 @@ keys.infura = Web3Gen.newRemoteProvider(infura_kovan);
   By this function I'm getting from mainnet
   MEC Smart contract which contains networks ids
  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
- /* * * * * * * ** * * * * ** * * * * * * ** * * * * * *
+ /* * * * * * * * * * * * * ** * * * * * * ** * * * * * *
   Add functions to catch update event in subnet and
   rewrite CP.Getter variable with new ABI and address
   *  * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 function init (password){
-  if (!keys.lastSession.getterAddress) {
-    let abi = require('../build/contracts/MEC.json');
-    let getter = keys.infura.eth.contract(abi);
-    keys.CP.Getter = getter.at('0xce3420889e6e07a44b96cc34371b4a72bded8223');
+
+    let abi = require('../build/contracts/Getter.json')
+    let adr = '0x1f3BC2890Fa90128490e1c695866f6de48D1d455'
+
+    keys._INIT.Getter = new keys.infura.eth.Contract(abi,adr)
 
     keys.accounts = Accounts('', "password", '');
     return;
-  } else {
-    let getter = keys.infura.eth.contract(lastSession.getterABI);
-    keys.CP.Getter = getter.at(lastSession.getterAddress);
-
-    keys.accounts = Accounts('', "password", '');
-    return;
-  }
 }
 
 function getNetworks() {
   return new Promise((resolve,reject)=>{
-    let obj = keys.CP.Getter;
+    let obj = keys._INIT.Getter;
     let response = [];
     var nets =[];
 
-    obj.get_all_nets((err,nets)=>{
+    obj.getAllNets((err,nets)=>{
 
       if(!nets.length) console.log("Something goes wrong, no nets found!")
       if(nets.length == 1) {
@@ -90,7 +84,7 @@ function getNetworks() {
 /* Getting only 1 network */
 function search(name) {
   return new Promise((resolve,reject)=>{
-    keys.CP.Getter.get_node(name,0, (err,res)=>{
+    keys._INIT.Getter.getUserEnodeUrl(name, '0x77e3e57ed18f7e3578215d6c45f246749975a2d9', (err,res)=>{
       setNewAvailableNetwork(res, name).then(ANobj=>{
         resolve(ANobj);
       })
@@ -111,7 +105,7 @@ function prepeareNetworksObject(net) {
   // only for proto, later it will be with array
   // prepeare for each network
   return new Promise((resolve,reject)=>{
-    keys.CP.Getter.get_node(net, 0, (err,node)=>{
+    keys._INIT.Getter.getUserEnodeUrl(net, '0x77e3e57ed18f7e3578215d6c45f246749975a2d9', (err,node)=>{
       if(err) reject(err);
       else {
         let name = utils.fromHex(net);
