@@ -31,7 +31,6 @@ module.exports = {
 	AVAILABLE_NETWORKS,
   _INIT,
 	CUSTOM_NODES,
-	lastSession,
 	infura,
 	ipc,
 	ports,
