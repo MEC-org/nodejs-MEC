@@ -12,6 +12,6 @@ WS_RPC_ARGS="--ws --wsaddr 0.0.0.0 --wsport $3 --wsapi $RPC_API --wsorigins=*"
 
 ALL_ARGS="$FLAGS $HTTP_RPC_ARGS $WS_RPC_ARGS"
 
-nohup ./Quorum/./geth $ALL_ARGS &> communicationNode.log &
+nohup ./node_modules/mec/Quorum/./geth $ALL_ARGS &> communicationNode.log &
 
 echo "[*] Communication node started"

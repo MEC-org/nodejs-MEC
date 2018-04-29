@@ -140,7 +140,7 @@ function copyCommunicationNodeKey(result, cb){
 
 // TODO: Add check whether requester has correct permissions
 function genesisConfigHandler(result, cb){
-  let genesisPath = process.cwd() + './Quorum/quorum-genesis.json'
+  let genesisPath = process.cwd() + './node_modules/mec/Quorum/quorum-genesis.json'
   let web3WSRPC = result.web3WSRPC;
 
   function onData(msg){
@@ -222,7 +222,7 @@ function getGenesisBlockConfig(result, cb){
         let genesisConfig = message.replace(response.genesisConfig, '').substring(1)
         genesisConfig = genesisConfig.replace(/\\n/g, '')
         genesisConfig = genesisConfig.replace(/\\/g, '')
-        fs.writeFile('./Quorum/quorum-genesis.json', genesisConfig, function(err, res){
+        fs.writeFile('./node_modules/mec/Quorum/quorum-genesis.json', genesisConfig, function(err, res){
           cb(err, result)
         })
       }
@@ -296,7 +296,7 @@ function getStaticNodesFile(result, cb){
 function startCommunicationNode(result, cb){
   var options = {encoding: 'utf8', timeout: 100*1000};
   console.log(__dirname)
-  var cmd = './Quorum/./startCommunicationNode.sh';
+  var cmd = './node_modules/mec/Quorum/./startCommunicationNode.sh';
   cmd += ' '+ports.communicationNodeRPC
   cmd += ' '+ports.communicationNode
   cmd += ' '+ports.communicationNodeWS_RPC

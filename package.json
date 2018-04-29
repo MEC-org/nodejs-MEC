@@ -1,6 +1,6 @@
 {
   "name": "mec",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "This package helps to create multi-layer chains upon Ethereum Network. Also it provides easy to use nodejs API to any of consortium network and helps to manage all of them at the same time",
   "main": "mec.js",
   "scripts": {
