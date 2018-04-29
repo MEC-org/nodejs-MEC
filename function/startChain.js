@@ -52,7 +52,7 @@ function getNetworks() {
   return new Promise((resolve,reject)=>{
     let obj = keys._INIT.Getter;
     let response = [];
-    var nets =[];
+    let nets =[];
 
     obj.getAllNets((err,nets)=>{
 
@@ -182,7 +182,7 @@ function initMEC(network, chainId, rpc) {
     // .then(()=>{
       let chain = new makers.SemiPrivateChain(network)
       chain.setup()
-      let path = `./Blockchain/${network}/./MEC.ipc`
+      let path = `./Blockchain/${network}/./geth.ipc`
 
       keys.ipc[network] = setIpcProvider(path)
 

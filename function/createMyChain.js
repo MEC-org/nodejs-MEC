@@ -6,13 +6,11 @@ const u = require('../utils/utils.js')
 const g = require('../utils/connectUserData.js')
 const conf = require('../Quorum/config.js')
 
-// let chainId = 1092015;
-
 function createMyChain(name) {
-	return new Promise((resolve,reject)=>{
+	return new Promise((resolve,reject) => {
 		let chain = new m.SemiPrivateChain(name)
 		chain.setup().then(() => {
-			let path = `./Blockchain/${name}/./geth.ipc`;
+			let path 	= `./Blockchain/${name}/./geth.ipc`;
 			k.ipc[name] = s.setIpcProvider(path)
 		})
 			// c.connectConsortium(
@@ -39,4 +37,4 @@ function setNodePublic(name, url) {
 	});
 }
 
-module.exports={createMyChain}
+module.exports = {createMyChain}
