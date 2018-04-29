@@ -12,13 +12,16 @@ class accounts {
   }
 
   my() {
-    return this.web3.accounts[0];
+    return new Promise((resolve,reject) => {
+      this.web3.getAccounts()
+      .then(accounts => { resolve(accounts[0]) })
+    });
   }
 
   createAccount() {
     return new Promise((resolve,reject)=>{
       this.node.personal.newAccount(this.password, (e,r)=>{
-        console.log(e,r)
+        console.log(e,r);
         if(r) resolve(r);
         else reject(e);
       })
@@ -42,15 +45,18 @@ class accounts {
 
   unlockAcc() {
     return new Promise((r,e)=>{
-      this.node.personal.unlockAccount(this.my(), this.password, (err,res)=>{
+      this.my()
+      .then(account => {
+      this.node.personal.unlockAccount(account, this.password, (err,res)=>{
         if(err) {console.log(err); e(err);}
         else {
           console.log(res);
-          this.node.settings.defaultAccount = this.my();
+          this.node.eth.defaultAccount = account;
           r(res);
         }
       })
-    });
+      })
+    })
   }
 }
 
@@ -59,8 +65,5 @@ let Accounts = (ipc, password, net)=>{
 }
 
 module.exports = {
-	// createAccount,
-	// importAccount,
-  // unlockAcc,
   Accounts
 }
