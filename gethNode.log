@@ -1,0 +1,45 @@
+INFO [04-29|12:36:24] Starting peer-to-peer node               instance=Geth/v1.7.2-stable-0905eda4/linux-amd64/go1.9.3
+INFO [04-29|12:36:24] Allocated cache and file handles         database="/home/bogdan/Рабочий стол/MEC/MEC-npm-package/Blockchain/qiibee/geth/chaindata" cache=128 handles=1024
+WARN [04-29|12:36:24] Upgrading database to use lookup entries 
+INFO [04-29|12:36:24] Database deduplication successful        deduped=0
+INFO [04-29|12:36:24] Reconfiguring old genesis as Quorum 
+INFO [04-29|12:36:24] Initialised chain configuration          config="{ChainID: 4058 Homestead: 0 DAO: <nil> DAOSupport: false EIP150: <nil> EIP155: <nil> EIP158: <nil> Byzantium: <nil> IsQuorum: true Engine: unknown}"
+INFO [04-29|12:36:24] Disk storage enabled for ethash caches   dir="/home/bogdan/Рабочий стол/MEC/MEC-npm-package/Blockchain/qiibee/geth/ethash" count=3
+INFO [04-29|12:36:24] Disk storage enabled for ethash DAGs     dir=/home/bogdan/.ethash                                                          count=2
+INFO [04-29|12:36:24] Initialising Ethereum protocol           versions="[63 62]" network=1
+INFO [04-29|12:36:24] Loaded most recent local header          number=0 hash=33baf8…befd43 td=0
+INFO [04-29|12:36:24] Loaded most recent local full block      number=0 hash=33baf8…befd43 td=0
+INFO [04-29|12:36:24] Loaded most recent local fast block      number=0 hash=33baf8…befd43 td=0
+INFO [04-29|12:36:24] Regenerated local transaction journal    transactions=0 accounts=0
+INFO [04-29|12:36:24] Starting P2P networking 
+INFO [04-29|12:36:26] UDP listener up                          self=enode://392bcd6ca73820fb45f6bdaa4517fd4cb58d08275d2bffaaf9a98f72611546115ea966e98e8dbe0ebcf552b076002a1642dd6182b0500f4f5a7c9ab9c28114d6@[::]:20000
+INFO [04-29|12:36:26] started whisper v.5.0 
+INFO [04-29|12:36:26] starting raft protocol handler 
+INFO [04-29|12:36:26] loaded the latest applied index          lastAppliedIndex=0
+INFO [04-29|12:36:26] RLPx listener up                         self=enode://392bcd6ca73820fb45f6bdaa4517fd4cb58d08275d2bffaaf9a98f72611546115ea966e98e8dbe0ebcf552b076002a1642dd6182b0500f4f5a7c9ab9c28114d6@[::]:20000
+INFO [04-29|12:36:26] replaying WAL 
+WARN [04-29|12:36:26] Removing static dial candidate           id=392bcd6ca73820fb addr=127.0.0.1:20000 err="is self"
+INFO [04-29|12:36:27] loading WAL                              term=0 index=0
+INFO [04-29|12:36:27] startRaft                                raft ID=1
+INFO [04-29|12:36:27] starting a new raft log                  initial cluster size of=1
+raft2018/04/29 12:36:27 INFO: 1 became follower at term 0
+raft2018/04/29 12:36:27 INFO: newRaft 1 [peers: [], term: 0, commit: 0, applied: 0, lastindex: 0, lastterm: 0]
+raft2018/04/29 12:36:27 INFO: 1 became follower at term 1
+INFO [04-29|12:36:27] IPC endpoint opened: /home/bogdan/Рабочий стол/MEC/MEC-npm-package/Blockchain/qiibee/geth.ipc 
+INFO [04-29|12:36:27] HTTP endpoint opened: http://127.0.0.1:20010 
+INFO [04-29|12:36:27] WebSocket endpoint opened: ws://127.0.0.1:20020 
+INFO [04-29|12:36:27] ignoring expected ConfChangeAddNode for initial peer raft id=1
+INFO [04-29|12:36:27] start snapshot                           applied index=0 last snapshot index=0
+INFO [04-29|12:36:27] compacted log                            index=0
+INFO [04-29|12:36:27] persisted the latest applied index       index=1
+raft2018/04/29 12:36:28 INFO: 1 is starting a new election at term 1
+raft2018/04/29 12:36:28 INFO: 1 became candidate at term 2
+raft2018/04/29 12:36:28 INFO: 1 received MsgVoteResp from 1 at term 2
+raft2018/04/29 12:36:28 INFO: 1 became leader at term 2
+raft2018/04/29 12:36:28 INFO: raft.node: 1 elected leader 1 at term 2
+INFO [04-29|12:36:28] Not minting a new block since there are no pending transactions 
+INFO [04-29|12:36:28] persisted the latest applied index       index=2
+WARN [04-29|12:36:48] message loop                             peer=158f3d8b6314b91a err=EOF
+WARN [04-29|12:39:24] message loop                             peer=096dbcd5aabe38ff err=EOF
+WARN [04-29|12:40:17] message loop                             peer=6d2e6af3d0427425 err=EOF
+WARN [04-29|12:43:03] message loop                             peer=e97fd80613c3a6e8 err=EOF

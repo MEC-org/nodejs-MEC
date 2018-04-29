@@ -1,4 +1,4 @@
-const k = require('../appStructure/keyElements.js');
+const k = require('../appStructure/keyElements.js').keyElements
 const ethereumtx = require('ethereumjs-tx');
 const abitor = require('ethereumjs-abi')
 
@@ -14,7 +14,7 @@ class Getter {
   setNode(name, address) {
     return new Promise((resolve,reject)=>{
 
-      this.transact(his.genTx(name,address))
+      this.transact(this.genTx(name,address))
       .then(log => { resolve(true) })
       .catch(err => { reject(err) })
 

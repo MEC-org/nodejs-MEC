@@ -1,4 +1,4 @@
-const k = require('../appStructure/keyElements.js')
+const k = require('../appStructure/keyElements.js').keyElements
 
 class APP {
 

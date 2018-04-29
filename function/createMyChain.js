@@ -1,36 +1,32 @@
 const m = require('../utils/Makers.js')
-const k = require('../appStructure/keyElements.js');
+const k = require('../appStructure/keyElements.js').keyElements
 const s = require('../function/startChain.js')
 const c = require('../utils/connectConsortium.js')
 const u = require('../utils/utils.js')
 const g = require('../utils/connectUserData.js')
+const conf = require('../Quorum/config.js')
 
 // let chainId = 1092015;
 
 function createMyChain(name) {
 	return new Promise((resolve,reject)=>{
-		// m.Chain(name).then(res=>{
-		// 	k.ports++;
-		// 	k.discovery++;
-		// 	m.Client(name, k.chainId, k.ports, k.discovery, true).then(res=>{
 		let chain = new m.SemiPrivateChain(name)
-		chain.setup()
-		let path = `./Blockchain/${name}./geth.ipc`
-		k.ipc[name] = s.setIpcProvider(path)
-		c.connectConsortium(
-			c.consortium_params(
-				u.nameToEnode(name),
-				name,
-				k.ports,
-				`http://localhost:${k.ports}`
-			).then(done => {
-				setNodePublic(name, u.nameToEnode(name))
-					.then(done => { resolve(true) })
-					.catch(err => { reject(err) })
-			})
-		)
-			// });
-		// })
+		chain.setup().then(() => {
+			let path = `./Blockchain/${name}/./geth.ipc`;
+			k.ipc[name] = s.setIpcProvider(path)
+		})
+			// c.connectConsortium(
+			// 	c.consortium_params(
+			// 		u.nameToEnode(name),
+			// 		name,
+			// 		k.ports,
+			// 		`http://localhost:${k.ports}`
+			// 	).then(done => {
+			// 		setNodePublic(name, u.nameToEnode(name))
+			// 			.then(done => { resolve(true) })
+			// 			.catch(err => { reject(err) })
+			// 	})
+			// )
 	});
 }
 

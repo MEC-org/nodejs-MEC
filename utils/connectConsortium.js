@@ -1,5 +1,5 @@
 const m = require('./Makers.js')
-const keys = require('../appStructure/keyElements.js')
+const keys = require('../appStructure/keyElements.js').keyElements
 const Tx = require('./tx.js').TX
 const Accounts = require('./accManag.js').Accounts
 const App = require('../function/appConfigs.js').APP

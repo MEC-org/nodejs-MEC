@@ -1,5 +1,5 @@
 var ncp = require('ncp').ncp;
-const k = require('../appStructure/keyElements.js')
+const k = require('../appStructure/keyElements.js').keyElements
 
 ncp.limit = 16;
 

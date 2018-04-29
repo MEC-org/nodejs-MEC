@@ -1,4 +1,4 @@
-const keys = require('../appStructure/keyElements.js');
+const keys = require('../appStructure/keyElements.js').keyElements
 const fs = require('fs');
 
 function Storage(chain) {

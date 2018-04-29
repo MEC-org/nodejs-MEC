@@ -9,10 +9,10 @@ const ports = require('./config.js').ports
 const conf = require('./config.js')
 
 function startRaftNode(result, cb){
-  console.log('[*] Starting raft node...')
+  console.log(`[*] Starting raft node... \n[*] Network name "${conf.identity.nodeName}"`)
   let options = {encoding: 'utf8', timeout: 100*1000}
   let cmd = './Quorum/./startRaftNode.sh'
-  console.log("\n\n",conf.identity.nodeName, "\n\n") 
+  
   cmd += ' '+conf.identity.nodeName
   cmd += ' '+ports.gethNode
   cmd += ' '+ports.gethNodeRPC
@@ -24,7 +24,6 @@ function startRaftNode(result, cb){
     cmd += ' allowAll'
   }
 
-  // exec(``)
   let child = exec(cmd, options)
   child.stdout.on('data', function(data){
     cb(null, result)
@@ -43,22 +42,6 @@ function startNewRaftNetwork(config, cb){
     networkMembership: config.networkMembership,
     keepExistingFiles: config.keepExistingFiles,
     folders: ['Blockchain', `Blockchain/${conf.identity.nodeName}/geth`], 
-    // constellationKeySetup: [
-    //   {folderName: 'Constellation', fileName: 'node'},
-    //   {folderName: 'Constellation', fileName: 'nodeArch'},
-    // ],
-    // constellationConfigSetup: { 
-    //   configName: 'constellation.config', 
-    //   folderName: 'Constellation', 
-    //   localIpAddress : config.localIpAddress, 
-    //   localPort : ports.constellation,
-    //   remoteIpAddress : null, 
-    //   remotePort : ports.constellation,
-    //   publicKeyFileName: 'node.pub', 
-    //   privateKeyFileName: 'node.key', 
-    //   publicArchKeyFileName: 'nodeArch.pub', 
-    //   privateArchKeyFileName: 'nodeArch.key', 
-    // },
     "web3IPCHost": `./Blockchain/${conf.identity.nodeName}/geth.ipc`,
     "web3RPCProvider": 'http://localhost:'+ports.gethNodeRPC,
     "web3WSRPCProvider": 'ws://localhost:'+ports.gethNodeWS_RPC,
@@ -69,16 +52,10 @@ function startNewRaftNetwork(config, cb){
     util.handleExistingFiles,
     util.generateEnode,
     util.displayEnode,
-    // whisper.StartCommunicationNetwork,
     util.handleNetworkConfiguration,
     startRaftNode,
     util.CreateWeb3Connection,
-    // whisper.AddEnodeResponseHandler,
-    peerHandler.ListenForNewEnodes,
-    // whisper.AddEtherResponseHandler,
-    // fundingHandler.MonitorAccountBalances,
-    // whisper.ExistingRaftNetworkMembership,
-    // whisper.PublishNodeInformation
+    peerHandler.ListenForNewEnodes
   )
 
   seqFunction(nodeConfig, function(err, res){

@@ -25,7 +25,7 @@ function startRaftNode(result, cb){
   }
   cmd += ' '+result.communicationNetwork.raftID
   // init blockchain folder before running 
-  exec(`./Quorum/./geth --datadir Blockchain/${conf.identity.nodeName} init quorum-genesis.json &>> /dev/null`)
+  // exec(`./Quorum/./geth --datadir Blockchain/${conf.identity.nodeName} init ./Quorum/quorum-genesis.json &>> /dev/null`)
   let child = exec(cmd, options)
   child.stdout.on('data', function(data){
     cb(null, result)

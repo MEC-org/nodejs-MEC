@@ -1,7 +1,7 @@
 const Web3Gen = require('../utils/Web3Generator.js');
 const makers = require('../utils/Makers.js');
 
-const keys = require('../appStructure/keyElements.js');
+const keys = require('../appStructure/keyElements.js').keyElements
 const cons = require('../utils/connectConsortium.js');
 const tx = require('../utils/tx.js')
 const utils = require('../utils/utils.js')

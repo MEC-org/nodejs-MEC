@@ -3,7 +3,7 @@ const exec = require('child_process').exec
 const Web3Gen = require('./Web3Generator.js')
 const Quorum = require('../Quorum/setupFromConfig.js')
 const Q_config = require('../Quorum/config.js')
-const keys = require('../appStructure/keyElements.js')
+const keys = require('../appStructure/keyElements.js').keyElements
 
 // running new semi-private chain
 class SemiPrivateChain {
@@ -12,51 +12,21 @@ class SemiPrivateChain {
   }
 
   setup() {
-    Q_config.setup.role = 'coordinator'
-    Q_config.identity.nodeName = this.name
-    Quorum.run()
+    return new Promise((resolve, reject) => {
+      Q_config.setup.role = 'coordinator'
+      Q_config.identity.nodeName = this.name
+      Quorum.run().then(() => { resolve(true) })
+    })
   }
 
   join(remoteIpAddress) {
-    Q_config.setup.role = 'non-coordinator'
-    Q_config.remoteIpAddress = remoteIpAddress
-    Quorum.run()
+    return new Promise((resolve, reject) => {
+      Q_config.setup.role = 'non-coordinator'
+      Q_config.remoteIpAddress = remoteIpAddress
+      Quorum.run().then(() => { resolve(true) })
+    })
   }
 }
-
-
-
-
-// function Chain(network) {
-//   return new Promise((resolve,reject)=>{
-//     let init = `${mec}./MEC --datadir ./Blockchain/${network} init ${mec}./genesis.json`;
-//     execute(init).then((log)=>{
-//       console.log(log);
-//       console.log('Successfully created new chain folder')
-//       // not importing account and this time
-//       // keys.accounts.importAccount(network)
-//       resolve(true);
-//     })
-//     .catch((err)=>{
-//       console.log(err);
-//       reject(err);
-//     })
-//   });
-// }
-
-// function Client(network, chainId, port, discovery, rpcswitch) {
-//   return new Promise((resolve,reject)=>{
-//     let rpc;
-//     if (rpcswitch) rpc = `--rpc --rpcapi "web3,eth,net" --rpcport ${port} --rpccorsdomain "*"`;
-//     else rpc = '';
-//     let bin = `${mec}./MEC --datadir ./Blockchain/${network} --port ${discovery} ${rpc} --networkid ${chainId} --nodiscover --verbosity "0" --ipcpath "./Blockchain/${network}/./MEC.ipc"`;
-//     execute(bin);
-//     setTimeout(()=>{
-//       resolve(true);
-//     }, 1000);
-
-//   });
-// }
 
 function newWeb3Provider(mec) {
   return Web3Gen.newRemoteProvider(mec)

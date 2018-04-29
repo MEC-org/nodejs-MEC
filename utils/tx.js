@@ -1,4 +1,4 @@
-const keys = require('../appStructure/keyElements.js')
+const keys = require('../appStructure/keyElements.js').keyElements
 const utils = require('./utils.js')
 
 class TX {

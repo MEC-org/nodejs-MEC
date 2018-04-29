@@ -140,7 +140,7 @@ function copyCommunicationNodeKey(result, cb){
 
 // TODO: Add check whether requester has correct permissions
 function genesisConfigHandler(result, cb){
-  let genesisPath = process.cwd() + '/quorum-genesis.json'
+  let genesisPath = process.cwd() + './Quorum/quorum-genesis.json'
   let web3WSRPC = result.web3WSRPC;
 
   function onData(msg){

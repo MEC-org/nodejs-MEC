@@ -1,7 +1,7 @@
 const layers = require('./function/startChain.js');
 const layer = require('./function/createMyChain.js');
 const newLayer = layer.createMyChain;
-const mng = require('./appStructure/keyElements.js');
+const mng = require('./appStructure/keyElements.js').keyElements
 const tx = require('./utils/tx.js').TX
 // const cli = require('./commands/eth-commands.js');
 const utils = require('./utils/utils.js')
