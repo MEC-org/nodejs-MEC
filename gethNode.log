@@ -43,3 +43,5 @@ WARN [04-29|12:36:48] message loop                             peer=158f3d8b6314
 WARN [04-29|12:39:24] message loop                             peer=096dbcd5aabe38ff err=EOF
 WARN [04-29|12:40:17] message loop                             peer=6d2e6af3d0427425 err=EOF
 WARN [04-29|12:43:03] message loop                             peer=e97fd80613c3a6e8 err=EOF
+WARN [04-29|12:45:58] message loop                             peer=ec813f938032eafb err=EOF
+WARN [04-29|12:47:44] message loop                             peer=e97fd80613c3a6e8 err=EOF
