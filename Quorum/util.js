@@ -239,13 +239,13 @@ function createRaftGenesisBlockConfig(result, cb){
 
   for(let key in result.addressList){
     genesisTemplate.alloc[result.addressList[key]] = {
-      "balance": "1000000000000000000000000000"
+      "balance": "100000000000000000000"
     }
   }
 
   let genesisConfig = JSON.stringify(genesisTemplate)
 
-  fs.writeFile('quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
+  fs.writeFile('./Quorum/quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
     // result.communicationNetwork.genesisBlockConfigReady = true;
     cb(err, result);
   })
