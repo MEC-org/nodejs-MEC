@@ -1,8 +1,7 @@
 const m = require('./Makers.js')
-const keys = require('../appStructure/keyElements.js');
+const keys = require('../appStructure/keyElements.js')
 const Tx = require('./tx.js').TX
 const Accounts = require('./accManag.js').Accounts
-const p = require('../function/periodic.js')
 const App = require('../function/appConfigs.js').APP
 
 let consortium_params = (node, network, ports, server)=>{
@@ -31,7 +30,8 @@ function connectConsortium(params) {
 
     chain = m.newWeb3Provider(params.server).eth;
 
-    p.listener(who)
+    // periodic function do catch transaction and mine, valid for POW
+    // p.listener(who)
 
     let old = keys.accounts.password
     let acc = Accounts(chain, old, who)

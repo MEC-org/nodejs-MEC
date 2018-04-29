@@ -3,7 +3,7 @@ const fs = require('fs');
 
 function Storage(chain) {
   return new Promise((resolve,reject)=>{
-    fs.access('.chainData/./' + chain, (err)=>{
+    fs.access(`./Blockchain/${chain}`, (err)=>{
       if(!err) {
         console.log('The blockchain data folder successfully found' + '\n');
         resolve(true);

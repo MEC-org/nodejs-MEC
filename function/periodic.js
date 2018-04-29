@@ -1,5 +1,5 @@
 const k = require('../appStructure/keyElements.js')
-const pool = require('../commands/txpool-commands.js')
+// const pool = require('../commands/txpool-commands.js')
 
 let listener = (name)=>{
 	setInterval(() => {

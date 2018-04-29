@@ -72,10 +72,10 @@ mec.newLayer("my")
 Successfull response means that now you can develop or anything else with your own sub-network blockchain.
 * at development newly created sub-networks can't be found outside your computer
  ```
-INFO [03-04|13:09:18] Allocated cache and file handles         database="/home/bogdan/Desktop/MEC_APP/.chainData/my/geth/chaindata" cache=16 handles=16
-INFO [03-04|13:09:18] Successfully wrote genesis state         database=chaindata                                                        hash=5ce27c…c8984e
-INFO [03-04|13:09:18] Allocated cache and file handles database="/home/bogdan/Desktop/MEC_APP/.chainData/my/geth/lightchaindata" cache=16 handles=16
-INFO [03-04|13:09:18] Successfully wrote genesis state         database=lightchaindata                                                        hash=5ce27c…c8984e
+INFO [03-04|13:09:18] Allocated cache and file handles         database="/home/bogdan/Desktop/MEC_APP/./Blockchain/my/geth//Blockchain" cache=16 handles=16
+INFO [03-04|13:09:18] Successfully wrote genesis state         database=/Blockchain                                                        hash=5ce27c…c8984e
+INFO [03-04|13:09:18] Allocated cache and file handles database="/home/bogdan/Desktop/MEC_APP/./Blockchain/my/geth/light/Blockchain" cache=16 handles=16
+INFO [03-04|13:09:18] Successfully wrote genesis state         database=light/Blockchain                                                        hash=5ce27c…c8984e
 
 Successfully created new chain folder
 INFO:Successfully imported accounts to my

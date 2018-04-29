@@ -31,8 +31,8 @@ class accounts {
   * * * * * * * * * * * * * * * * * * * * * * * * * */
   importAccount(newChain) {
     ncp(
-      `.chainData/signup/keystore/`,
-      `.chainData/${newChain}/keystore/`,
+      `./Blockchain/signup/keystore/`,
+      `./Blockchain/${newChain}/keystore/`,
       (err)=>{
         if(err) return console.log(err)
         else console.log(`INFO:Successfully imported accounts to ${newChain}`)

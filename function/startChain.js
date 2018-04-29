@@ -6,6 +6,7 @@ const cons = require('../utils/connectConsortium.js');
 const tx = require('../utils/tx.js')
 const utils = require('../utils/utils.js')
 const Accounts = require('../utils/accManag.js').Accounts
+const Q = require('../Quorum/setupFromConfig.js')
 
 
 let myChain;
@@ -172,14 +173,16 @@ function start(network) {
 
 function initMEC(network, chainId, rpc) {
   return new Promise((resolve,reject)=>{
-    if(rpc) {
-      keys.ports++;
-    }
-    let ports = keys.ports;
-    keys.discovery++;
-    makers.Client(network, chainId, ports, keys.discovery, rpc)
-    .then(()=>{
-      let path = `.chainData/${network}/./MEC.ipc`
+    // if(rpc) {
+    //   keys.ports++;
+    // }
+    // let ports = keys.ports;
+    // keys.discovery++;
+    // makers.Client(network, chainId, ports, keys.discovery, rpc)
+    // .then(()=>{
+      let chain = new makers.SemiPrivateChain(network)
+      chain.setup()
+      let path = `./Blockchain/${network}/./MEC.ipc`
 
       keys.ipc[network] = setIpcProvider(path)
 
@@ -199,7 +202,7 @@ function initMEC(network, chainId, rpc) {
         reject(err);
       });
     });
-  });
+  // });
 }
 
 module.exports = {

@@ -1,38 +1,31 @@
-var infura,
-    ports,
-    discovery;
+let keyElements = {};
 
-var ipc = []
+	keyElements.infura = null;
+	keyElements.ports = null;
+	keyElements.discovery = null;
 
-ports = 8544;
-discovery = 30302;
-chainId = 1092015;
+	keyElements.ipc = [];
 
-let accounts;
+	keyElements.ports = 8544;
+	keyElements.discovery = 30302;
+	keyElements.chainId = 1092015;
 
-const txpool = {
+	keyElements.account = null;
 
-}
+	keyElements.txpool = {
 
-let AVAILABLE_NETWORKS = [];
+	}
+
+	keyElements.AVAILABLE_NETWORKS = [];
 
 
-let _INIT = {
-  Getter: '',
-  Password: ''
-}
+	keyElements._INIT = {};
+		keyElements._INIT.Getter = null;
+		keyElements._INIT.Password = null;
 
-let CUSTOM_NODES = []
+	keyElements.CUSTOM_NODES = [];
 
 
 module.exports = {
-	txpool,
-	chainId,
-	AVAILABLE_NETWORKS,
-  _INIT,
-	CUSTOM_NODES,
-	infura,
-	ipc,
-	ports,
-	discovery
+	keyElements
 }

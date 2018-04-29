@@ -1,43 +1,65 @@
-const exec = require('child_process').exec;
-const Web3Gen = require('./Web3Generator.js');
-// const manager = require('./accManag.js').Accounts
+const exec = require('child_process').exec
+
+const Web3Gen = require('./Web3Generator.js')
+const Quorum = require('../Quorum/setupFromConfig.js')
+const Q_config = require('../Quorum/config.js')
 const keys = require('../appStructure/keyElements.js')
-const path = "./node_modules/mec/"
-// const fs = require('fs');
 
-function Chain(network) {
-  return new Promise((resolve,reject)=>{
-    let init = `${path}./MEC --datadir .chainData/${network} init ${path}./genesis.json`;
-    execute(init).then((log)=>{
-      console.log(log);
-      console.log('Successfully created new chain folder')
-      // not importing account and this time
-      keys.accounts.importAccount(network)
-      resolve(true);
-    })
-    .catch((err)=>{
-      console.log(err);
-      reject(err);
-    })
-  });
+// running new semi-private chain
+class SemiPrivateChain {
+  constructor(name) {
+    this.name = name
+  }
+
+  setup() {
+    Q_config.setup.role = 'coordinator'
+    Q_config.identity.nodeName = this.name
+    Quorum.run()
+  }
+
+  join(remoteIpAddress) {
+    Q_config.setup.role = 'non-coordinator'
+    Q_config.remoteIpAddress = remoteIpAddress
+    Quorum.run()
+  }
 }
 
-function Client(network, chainId, port, discovery, rpcswitch) {
-  return new Promise((resolve,reject)=>{
-    let rpc;
-    if (rpcswitch) rpc = `--rpc --rpcapi "web3,eth,net" --rpcport ${port} --rpccorsdomain "*"`;
-    else rpc = '';
-    let bin = `${path}./MEC --datadir .chainData/${network} --port ${discovery} ${rpc} --networkid ${chainId} --nodiscover --verbosity "0" --ipcpath ".chainData/${network}/./MEC.ipc"`;
-    execute(bin);
-    setTimeout(()=>{
-      resolve(true);
-    }, 1000);
 
-  });
-}
 
-function newWeb3Provider(path) {
-  return Web3Gen.newRemoteProvider(path)
+
+// function Chain(network) {
+//   return new Promise((resolve,reject)=>{
+//     let init = `${mec}./MEC --datadir ./Blockchain/${network} init ${mec}./genesis.json`;
+//     execute(init).then((log)=>{
+//       console.log(log);
+//       console.log('Successfully created new chain folder')
+//       // not importing account and this time
+//       // keys.accounts.importAccount(network)
+//       resolve(true);
+//     })
+//     .catch((err)=>{
+//       console.log(err);
+//       reject(err);
+//     })
+//   });
+// }
+
+// function Client(network, chainId, port, discovery, rpcswitch) {
+//   return new Promise((resolve,reject)=>{
+//     let rpc;
+//     if (rpcswitch) rpc = `--rpc --rpcapi "web3,eth,net" --rpcport ${port} --rpccorsdomain "*"`;
+//     else rpc = '';
+//     let bin = `${mec}./MEC --datadir ./Blockchain/${network} --port ${discovery} ${rpc} --networkid ${chainId} --nodiscover --verbosity "0" --ipcpath "./Blockchain/${network}/./MEC.ipc"`;
+//     execute(bin);
+//     setTimeout(()=>{
+//       resolve(true);
+//     }, 1000);
+
+//   });
+// }
+
+function newWeb3Provider(mec) {
+  return Web3Gen.newRemoteProvider(mec)
 }
 
 function execute(command){
@@ -51,8 +73,7 @@ function execute(command){
 }
 
 module.exports = {
-	Chain,
-	Client,
+  SemiPrivateChain,
   newWeb3Provider,
   execute
 }

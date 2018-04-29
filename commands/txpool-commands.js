@@ -1,6 +1,7 @@
 const exec = require('child_process').exec;
 
-var Txpool = function(node) {
+let Txpool = async function(node) {
+	let res = await content(node);
 	Txpool.content = new Promise((r,e)=>{
 		content(node).then((res)=>{
 			let x = JSON.parse(res).result.pending;
@@ -13,7 +14,7 @@ var Txpool = function(node) {
 	});
 }
 
-function forEach(data, callback) {
+async function forEach(data, callback) {
   for(let key in data) {
     var arr = [];
     arr.push(data[key]);
@@ -23,7 +24,7 @@ function forEach(data, callback) {
 
 function content(node) {
 	return new Promise((r,e)=>{
-		execute(`echo '{"jsonrpc":"2.0","method":"txpool_content","params":[],"id":1092015}' | nc -U .chainData/${node}/./MEC.ipc`).then((result)=>{
+		execute(`echo '{"jsonrpc":"2.0","method":"txpool_content","params":[],"id":1092015}' | nc -U ./Blockchain/${node}/./MEC.ipc`).then((result)=>{
 			r(result);
 		})
 		.catch((error)=>{

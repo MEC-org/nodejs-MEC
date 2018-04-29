@@ -1,9 +1,3 @@
-// const m = require('./Makers.js')
-// const Tx = require('./tx.js').TX
-// const App = require('../function/appConfigs.js').APP
-
-// const fs = require('fs')
-
 const k = require('../appStructure/keyElements.js');
 const ethereumtx = require('ethereumjs-tx');
 const abitor = require('ethereumjs-abi')
