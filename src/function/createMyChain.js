@@ -13,18 +13,18 @@ function createMyChain(name) {
 			let path 	= `./Blockchain/${name}/./geth.ipc`;
 			k.ipc[name] = s.setIpcProvider(path)
 		})
-			// c.connectConsortium(
-			// 	c.consortium_params(
-			// 		u.nameToEnode(name),
-			// 		name,
-			// 		k.ports,
-			// 		`http://localhost:${k.ports}`
-			// 	).then(done => {
-			// 		setNodePublic(name, u.nameToEnode(name))
-			// 			.then(done => { resolve(true) })
-			// 			.catch(err => { reject(err) })
-			// 	})
-			// )
+			c.connectConsortium(
+				c.consortium_params(
+					u.nameToEnode(name),
+					name,
+					k.ports,
+					`http://localhost:${k.ports}`
+				).then(done => {
+					setNodePublic(name, u.nameToEnode(name))
+						.then(done => { resolve(true) })
+						.catch(err => { reject(err) })
+				})
+			)
 	});
 }
 
