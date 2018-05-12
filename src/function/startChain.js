@@ -5,7 +5,8 @@ const Web3Gen = require('../utils/Web3Generator.js'),
            tx = require('../utils/tx.js'),
         utils = require('../utils/utils.js'),
      Accounts = require('../utils/accManag.js').Accounts,
-            Q = require('../Quorum/setupFromConfig.js');
+            Q = require('../Quorum/setupFromConfig.js'),
+     Q_config = require('../Quorum/config');
 
 // Main Ethereum Network
 // Test Ethereum Network (Ropsten)
@@ -30,12 +31,14 @@ keys.infura = Web3Gen.newRemoteProvider(infura_kovan);
   rewrite CP.Getter variable with new ABI and address
   *  * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 function init (password){
-    const abi = require('../build/contracts/Getter.json'),
-          adr = '0x1f3BC2890Fa90128490e1c695866f6de48D1d455';
+    const abi = require('../../build/contracts/Getter.json'),
+          adr = '0x0f5deec9e85cddb24900efffe2b2acbf5a37ebb3';
 
-    keys._INIT.Getter = new keys.infura.eth.Contract(abi,adr);
+    keys._INIT.Getter = new keys.infura.eth.Contract(abi.abi);
+    keys._INIT.Getter._address = adr;
 
-    keys.accounts = Accounts('', "password", '');
+    keys.accounts = Accounts('', password, '');
+    console.log(`[INFO] Initialization was successful`);
     return;
 }
 
@@ -44,47 +47,64 @@ function getNetworks() {
     let response = [];
     const obj = keys._INIT.Getter;
 
-    obj.getAllNets((err,nets)=>{
+    obj.methods.getAllNets()
+    .call({
+      from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
+    })
+    .then(nets => {
 
-      if(!nets.length) console.log("Something goes wrong, no nets found!");
+      if(!nets.length) console.log("[ERROR] Something goes wrong, no nets found!");
       if(nets.length == 1) {
         // getNode()
         prepeareNetworksObject(nets[0]).then(lastAVnet=>{
           response.push(lastAVnet);
         });
       } else if(nets.length != 1) {
-        const check = ()=>{
-          console.log(response.length)
+        const check = () => {
+          // console.log(response.length)
           if(response.length == nets.length)
             resolve(response);
-          else
+          else  
             return false;
         }
         for(let i=0; i<nets.length; i++) {
           prepeareNetworksObject(nets[i])
-          .then(lastAVnet=>{
+          .then(lastAVnet => {
             response.push(lastAVnet);
             check();
           })
           .catch((err)=>{
-            console.log("ERROR: Something goes wrong: %s", err);
+            console.log("[ERROR] Something goes wrong: %s", err);
           })
         }
       }
-    });
+    })
+    .catch(err => {
+      // console.log(err);
+      reject(err);
+    })
   });
 }
 
 /* Getting only 1 network */
 function search(name) {
   return new Promise((resolve,reject)=>{
-    keys._INIT.Getter.getUserEnodeUrl(name, '0x77e3e57ed18f7e3578215d6c45f246749975a2d9', (err,res)=>{
+    keys._INIT.Getter.methods.getUserEnodeUrl(utils.asciiToHex(name), '0x3d41d04f27efe6e837dce30f3412f98c9ade47ef')
+    .call({
+      from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
+    })
+    .then(res => {
+      // console.log(res);
       setNewAvailableNetwork(res, name)
       .then(ANobj=>{
         resolve(ANobj);
       })
       .catch(err=>{ reject(err); });
-  });
+    })
+    .catch(err => {
+      // console.log(err);
+      reject(err);
+    })
   });
 }
 
@@ -93,7 +113,10 @@ function getInterface() {
     getNetworks()
     .then(net=>{
       resolve(net);
-    });
+    })
+    .catch(error => {
+      reject(error);
+    })
   });
 }
 
@@ -101,7 +124,11 @@ function prepeareNetworksObject(net) {
   // only for proto, later it will be with array
   // prepeare for each network
   return new Promise((resolve,reject)=>{
-    keys._INIT.Getter.getUserEnodeUrl(net, '0x77e3e57ed18f7e3578215d6c45f246749975a2d9', (err,node)=>{
+    keys._INIT.Getter.methods.getUserEnodeUrl(utils.asciiToHex(net), "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef")
+    .call({
+      from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
+    })
+    .then(node => {
       if(err) reject(err);
       else {
         const name = utils.fromHex(net);
@@ -111,21 +138,23 @@ function prepeareNetworksObject(net) {
         })
         .catch(err=>{ reject(err); })
       }
+    })
+    .catch(err => {
+      // console.log(err);
+      reject(err);
     });
   });
 }
 
 function setNewAvailableNetwork(node, name) {
   return new Promise((resolve,reject)=>{
-    const abitor = require('../build/contracts/Getter.json');
     keys.AVAILABLE_NETWORKS
     .push({
       name: name,
-      enode: utils.fromHex(node[0]),
-      address:node[1],
-      abi:abitor
+      enode: utils.fromHex(node),
     });
     const obj = keys.AVAILABLE_NETWORKS;
+    console.log(`[INFO] Successfully added new "${name}" network`);
     resolve(obj[obj.length-1]);
   });
 }
@@ -138,50 +167,37 @@ function start(network) {
   return new Promise((resolve,reject)=>{
     utils.Storage(network)
     .then(()=>{
-      initMEC(network, keys.chainId, true)
+      initMEC(network, true)
       .then(mes=>{
-        console.log(mes);
+        // console.log(mes);
         resolve(mes);
       })
       .catch((err)=>{
-        console.log(err);
+        // console.log(err);
       });
     })
     .catch(()=>{
-      makers.Chain(network)
-      .then(()=>{
-        /*
-          For newly created chains I must import account,
-          wait until chain data will be ready and then continue
-        */
-        initMEC(network, keys.chainId, true)
-        .then(mes=>{
-          resolve(mes);
-        })
-        .catch((err)=>{
-          console.log(err);
-        })
+      /*
+        For newly created chains I must import account,
+        wait until chain data will be ready and then continue
+      */
+      initMEC(network, true)
+      .then(mes=>{
+        resolve(mes);
       })
       .catch((err)=>{
-        // add creation error window
-        // error at blockchain initialization
-        console.log(err);
+        // console.log(err);
       });
     });
   });
 }
 
-function initMEC(network, chainId, rpc) {
+function initMEC(network, rpc) {
   return new Promise((resolve,reject)=>{
-    // if(rpc) {
-    //   keys.ports++;
-    // }
-    // let ports = keys.ports;
-    // keys.discovery++;
-    // makers.Client(network, chainId, ports, keys.discovery, rpc)
-    // .then(()=>{
+
       const chain = new makers.SemiPrivateChain(network),
              path = `./Blockchain/${network}/./geth.ipc`;
+      utils.allocateFreePorts();
       chain.setup();
 
       keys.ipc[network] = setIpcProvider(path);
@@ -190,19 +206,18 @@ function initMEC(network, chainId, rpc) {
         cons.consortium_params(
           utils.nameToEnode(network),
           network,
-          ports,
-          `http://localhost:${ports}`
+          Q_config.ports.gethNodeRPC,
+          `http://localhost:${Q_config.ports.gethNodeRPC}`
         )
       )
       .then(mes=>{
         resolve(mes);
        })
       .catch((err)=>{
-        console.log("ERROR: Some error with adding peer. Try to debug, input data: " + enode);
+        console.log("[ERROR] Some error with adding peer. Try to debug, input data: " + enode);
         reject(err);
       });
     });
-  // });
 }
 
 module.exports = {

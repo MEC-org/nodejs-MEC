@@ -3,7 +3,7 @@
 let env = process.env
 let config = {}
 
-config.chainId = 4058
+config.chainId = 1
 
 config.ports = {}
 config.ports.communicationNode = 50000

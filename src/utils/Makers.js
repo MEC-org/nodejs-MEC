@@ -14,7 +14,10 @@ class SemiPrivateChain {
     return new Promise((resolve, reject) => {
       Q_config.setup.role = 'coordinator';
       Q_config.identity.nodeName = this.name;
-      Quorum.run().then(() => { resolve(true); });
+      ++Q_config.ports.gethNodeRPC;
+      Quorum.run()
+      .then(() => { resolve(true); })
+      .catch(err => { console.log("") });
     });
   }
 
@@ -22,7 +25,10 @@ class SemiPrivateChain {
     return new Promise((resolve, reject) => {
       Q_config.setup.role = 'non-coordinator';
       Q_config.remoteIpAddress = remoteIpAddress;
-      Quorum.run().then(() => { resolve(true); });
+      ++Q_config.ports.gethNodeRPC;
+      Quorum.run()
+      .then(() => { resolve(true); })
+      .catch(err => { console.log("") });
     });
   }
 }

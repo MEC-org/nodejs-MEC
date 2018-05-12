@@ -2,8 +2,8 @@ pragma solidity^0.4.18;
 
 contract Getter {
 
-    address[] public allUsers;
-    bytes32[] public getAllNets;
+    address[] allUsers;
+    bytes32[] allNets;
 
     struct ChainUsers {
         mapping (address => bool) validChainUser;
@@ -27,7 +27,7 @@ contract Getter {
         require(chu.validChainUser[msg.sender]);
         chu.validChainUserNodes[msg.sender].allUserNodes.push(node_name);
         chu.validChainUserNodes[msg.sender].nodeNameToEnode[node_name] = enode_url;
-        getAllNets.push(node_name);
+        allNets.push(node_name);
     }
 
     function getUserNodes (address user_address) public view returns (bytes32[]) {
@@ -38,6 +38,14 @@ contract Getter {
     function getUserEnodeUrl (bytes32 node_name, address user_address) public view returns (bytes) {
         require(chu.validChainUser[msg.sender]);
         return chu.validChainUserNodes[user_address].nodeNameToEnode[node_name];
+    }
+
+    function getAllUsers() public view returns (address[]) {
+        return allUsers;
+    }
+
+    function getAllNets() public view returns (bytes32[]) {
+        return allNets;
     }
 
 } 
