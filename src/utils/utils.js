@@ -1,5 +1,5 @@
-const keys = require('../appStructure/keyElements.js').keyElements
-const fs = require('fs');
+const keys = require('../appStructure/keyElements.js').keyElements,
+      fs   = require('fs');
 
 function Storage(chain) {
   return new Promise((resolve,reject)=>{
@@ -17,16 +17,16 @@ function Storage(chain) {
 }
 
 
-let fromHex = function(hexx) {
+const fromHex = function(hexx) {
   // return keys.infura.toAscii(str)
-  var hex = hexx.toString();//force conversion
-  var str = '';
-  for (var i = 0; i < hex.length; i += 2)
+  const hex = hexx.toString();//force conversion
+  let str = '';
+  for (let i = 0; i < hex.length; i += 2)
     str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
   return str.replace(/\u0000/g, '');
 }
 
-let nameToEnode = (name)=>{
+const nameToEnode = (name)=>{
   for(let i=0; i<keys.AVAILABLE_NETWORKS.length; i++) {
     if(keys.AVAILABLE_NETWORKS[i].name == name) {
       return keys.AVAILABLE_NETWORKS[i].enode;
@@ -34,7 +34,7 @@ let nameToEnode = (name)=>{
   }
 }
 
-let nodeToName = (node)=>{
+const nodeToName = (node)=>{
   for(let i=0; i<keys.AVAILABLE_NETWORKS.length; i++) {
     if(keys.AVAILABLE_NETWORKS[i].enode == node) {
       return keys.AVAILABLE_NETWORKS[i].name;

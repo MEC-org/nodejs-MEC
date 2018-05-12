@@ -9,13 +9,13 @@ var kill = function (pid, signal, callback) {
                   return p.PID;
               })
           ).forEach(function (tpid) {
-              try { process.kill(tpid, signal) }
+              try { process.kill(tpid, signal); }
               catch (ex) { }
           });
           callback();
       });
   } else {
-      try { process.kill(pid, signal) }
+      try { process.kill(pid, signal); }
       catch (ex) { }
       callback();
   }

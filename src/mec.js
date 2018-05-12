@@ -6,7 +6,7 @@ const layers = require('./function/startChain.js'),
        utils = require('./utils/utils.js'),
 	accounts = require('./utils/accManag.js').Accounts,
 	     app = require('./function/appConfigs.js').APP,
-		node = require('./function/appConfigs.js').CLI
+		node = require('./function/appConfigs.js').CLI;
 
 
 module.exports={

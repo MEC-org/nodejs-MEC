@@ -1,4 +1,4 @@
-const k = require('../appStructure/keyElements.js').keyElements
+const k = require('../appStructure/keyElements.js').keyElements;
 
 class APP {
 
@@ -7,19 +7,19 @@ class APP {
   }
 
   howTo (method) {
-	return getAbi(this.app.abi, method);
+		return getAbi(this.app.abi, method);
   }
 }
 
-let getAbi = (from, name) => {
+const getAbi = (from, name) => {
 	for(let i=0; i<from.length; i++) {
-		if(from[i].name == name) return from[i]
+		if(from[i].name == name) return from[i];
 	}
 }
 
-let CLI = (name)=>{
-  let CN = k.CUSTOM_NODES[name];
-  return CN.chainClient 
+const CLI = (name)=>{
+  const CN = k.CUSTOM_NODES[name];
+  return CN.chainClient;
 }
 
 module.exports = {

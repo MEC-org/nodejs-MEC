@@ -1,5 +1,5 @@
-const keys = require('../appStructure/keyElements.js').keyElements
-const utils = require('./utils.js')
+const keys = require('../appStructure/keyElements.js').keyElements,
+     utils = require('./utils.js');
 
 class TX {
   constructor(application) {

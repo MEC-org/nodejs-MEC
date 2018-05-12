@@ -1,5 +1,5 @@
-var ncp = require('ncp').ncp;
-const k = require('../appStructure/keyElements.js').keyElements
+let ncp = require('ncp').ncp;
+const k = require('../appStructure/keyElements.js').keyElements;
 
 ncp.limit = 16;
 
@@ -14,7 +14,7 @@ class accounts {
   my() {
     return new Promise((resolve,reject) => {
       this.web3.getAccounts()
-      .then(accounts => { resolve(accounts[0]) })
+      .then(accounts => { resolve(accounts[0]); })
     });
   }
 
@@ -37,8 +37,8 @@ class accounts {
       `./Blockchain/signup/keystore/`,
       `./Blockchain/${newChain}/keystore/`,
       (err)=>{
-        if(err) return console.log(err)
-        else console.log(`INFO:Successfully imported accounts to ${newChain}`)
+        if(err) return console.log(err);
+        else console.log(`INFO:Successfully imported accounts to ${newChain}`);
       }
       );
   }
@@ -48,20 +48,23 @@ class accounts {
       this.my()
       .then(account => {
       this.node.personal.unlockAccount(account, this.password, (err,res)=>{
-        if(err) {console.log(err); e(err);}
+        if(err) {
+          console.log(err);
+          e(err);
+        }
         else {
           console.log(res);
           this.node.eth.defaultAccount = account;
           r(res);
         }
-      })
-      })
-    })
+      });
+      });
+    });
   }
 }
 
-let Accounts = (ipc, password, net)=>{
-  return new accounts(ipc, password, net)
+const Accounts = (ipc, password, net)=>{
+  return new accounts(ipc, password, net);
 }
 
 module.exports = {
