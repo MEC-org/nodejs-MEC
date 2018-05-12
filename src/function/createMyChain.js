@@ -4,7 +4,7 @@ const m = require('../utils/Makers.js'),
 	  c = require('../utils/connectConsortium.js'),
 	  u = require('../utils/utils.js'),
 	  g = require('../utils/connectUserData.js'),
-   conf = require('../Quorum/config.js');
+ conf = require('../Quorum/config.js');
 
 function createMyChain(name) {
 	return new Promise((resolve,reject) => {

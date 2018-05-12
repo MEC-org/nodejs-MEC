@@ -1,5 +1,5 @@
 const web3_ex = require('web3_ipc'),
-	  	 Web3 = require('web3')
+	  	 Web3 = require('web3');
 
 
 function newRemoteProvider(host) {

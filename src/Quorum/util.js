@@ -157,7 +157,7 @@ function connectToPeer(result, cb){
 
 function getNewGethAccount(result, cb, chain){
   let options = {encoding: 'utf8', timeout: 10*1000};
-  let child = exec(`./node_modules/mec/Quorum/./geth --datadir Blockchain/${config.identity.nodeName} account new`, options);
+  let child = exec(`./node_modules/mec/src/Quorum/./geth --datadir Blockchain/${config.identity.nodeName} account new`, options);
   child.stdout.on('data', function(data){
     if(data.indexOf('Your new account') >= 0){
       child.stdin.write('\n');
@@ -245,7 +245,7 @@ function createRaftGenesisBlockConfig(result, cb){
 
   let genesisConfig = JSON.stringify(genesisTemplate)
 
-  fs.writeFile('./node_modules/mec/Quorum/quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
+  fs.writeFile('./node_modules/mec/src/Quorum/quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
     // result.communicationNetwork.genesisBlockConfigReady = true;
     cb(err, result);
   })

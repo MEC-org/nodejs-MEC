@@ -11,7 +11,7 @@ const conf = require('./config.js')
 function startRaftNode(result, cb){
   console.log(`[*] Starting raft node... \n[*] Network name "${conf.identity.nodeName}"`)
   let options = {encoding: 'utf8', timeout: 100*1000}
-  let cmd = './node_modules/mec/Quorum/./startRaftNode.sh'
+  let cmd = './node_modules/mec/src/Quorum/./startRaftNode.sh'
   
   cmd += ' '+conf.identity.nodeName
   cmd += ' '+ports.gethNode

@@ -3,7 +3,7 @@ set -u
 set -e
 
 # nohup constellation-node constellation.config &> constellation.log &
-./node_modules/mec/Quorum/./geth --datadir Blockchain/$1 init ./node_modules/mec/Quorum/quorum-genesis.json &>> /dev/null
+./node_modules/mec/src/Quorum/./geth --datadir Blockchain/$1 init ./node_modules/mec/src/Quorum/quorum-genesis.json &>> /dev/null
 
 sleep 5
 
@@ -27,6 +27,6 @@ fi
 
 ALL_ARGS="$FLAGS $HTTP_RPC_ARGS $WS_RPC_ARGS $RAFT_ARGS"
 
-./node_modules/mec/Quorum/./geth $ALL_ARGS &> gethNode.log &
+./node_modules/mec/src/Quorum/./geth $ALL_ARGS &> gethNode.log &
 
 echo "[*] Node started"
