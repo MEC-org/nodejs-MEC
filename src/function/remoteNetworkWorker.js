@@ -1,5 +1,6 @@
 const keys = require('../appStructure/keyElements').keyElements,
-     utils = require('../utils/utils');
+     utils = require('../utils/utils'),
+        fs = require('fs');
 
 function getNetworks() {
   return new Promise((resolve,reject)=>{
@@ -103,8 +104,23 @@ function setNewAvailableNetwork(node, name) {
       enode: utils.fromHex(node),
     });
     const obj = keys.AVAILABLE_NETWORKS;
-    console.log(`[INFO] Successfully added new "${name}" network`);
-    resolve(obj[obj.length-1]);
+
+    prepeareNewChainSpace(name).then(() => {
+      resolve(obj[obj.length-1]);
+    })
+  });
+}
+
+function prepeareNewChainSpace(name) {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(`./Blockchain/${name}`, (err) => {
+      if(err)
+        reject(err);
+      else {
+        console.log(`[INFO] Successfully added "${name}" network to Blockchain space`);
+        resolve(true);
+      }
+    });
   });
 }
 

@@ -23,21 +23,27 @@ keys.infura = Web3Gen.newRemoteProvider(infura_kovan);
   MEC Smart contract which contains networks ids
  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function init (password){
-    const abi = require('../../build/contracts/Getter.json'),
-          adr = '0x0f5deec9e85cddb24900efffe2b2acbf5a37ebb3';
+  const abi = require('../../build/contracts/Getter.json'),
+        adr = '0x0f5deec9e85cddb24900efffe2b2acbf5a37ebb3';
 
-    keys.setup.Getter = new keys.infura.eth.Contract(abi.abi);
-    keys.setup.Getter._address = adr;
+  keys.setup.Getter = new keys.infura.eth.Contract(abi.abi);
+  keys.setup.Getter._address = adr;
 
-    keys.accounts = Accounts('', password, '');
-    fs.writeFile(`./passwordfile`, password, (err) => {
-      if(err)
-        console.log(err);
-      else {
-        console.log(`[INFO] Initialization was successful`);
-        return;
-      }
-    });
+  keys.accounts = Accounts('', password, '');
+  fs.writeFile(`./passwordfile`, password, (err) => {
+    if(err)
+      console.log(err);
+    else {
+      console.log(`[INFO] Initialization was successful`);
+      return;
+    }
+  });
+  fs.mkdir(`./Blockchain`, (err) => {
+    if(err)
+      console.log(err);
+    else
+      console.log(`[INFO] Blockchain space successfully prepeared`);
+  })
 }
 
 function setIpcProvider(path) {
