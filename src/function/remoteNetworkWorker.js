@@ -1,6 +1,7 @@
 const keys = require('../appStructure/keyElements').keyElements,
      utils = require('../utils/utils'),
-        fs = require('fs');
+        fs = require('fs'),
+      exec = require('child_process').exec
 
 function getNetworks() {
   return new Promise((resolve,reject)=>{

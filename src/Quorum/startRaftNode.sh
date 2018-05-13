@@ -2,8 +2,9 @@
 set -u
 set -e
 
-# nohup constellation-node constellation.config &> constellation.log &
 ./node_modules/mec/src/Quorum/./geth --datadir Blockchain/$1 init ./node_modules/mec/src/Quorum/quorum-genesis.json &>> /dev/null
+
+nohup ./node_modules/mec/src/Quorum/./constellation-node ./node_modules/mec/src/Quorum/constellation.config &> constellation.log &
 
 sleep 5
 

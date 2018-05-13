@@ -2,6 +2,8 @@ const exec  = require('child_process').exec
 const ps    = require('ps-node')
 const fs    = require('fs');
 const async = require('async')
+const utils = require('../utils/utils')
+let constellation = require('./constellation.js')
 
 const config   = require('./config.js')
 const ports    = config.ports
@@ -10,7 +12,7 @@ const setup    = config.setup
 function killallGethConstellationNode(cb){
   let cmd   = 'killall -9';
       cmd  += ' geth';
-      cmd  += ' constellation-node';
+      cmd  += ' ./node_modules/mec/src/Quorum/./constellation-node';
   let child = exec(cmd, function(){
     cb(null, null);
   });
@@ -69,6 +71,8 @@ function createDirectories(result, cb){
 
 
 function hex2a(hexx) {
+  const hex = hexx.toString();//force conversion
+  let str = '';
   for (let i = 0; i < hex.length; i += 2){
     str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
   }
@@ -196,7 +200,7 @@ function checkPreviousCleanExit(cb){
     }, 
     constellation: function(callback){
       ps.lookup({
-        command: 'constellation-node',
+        command: './node_modules/mec/src/Quorum/./constellation-node',
         psargs: 'ef'
       }, 
       function(err, resultList){
@@ -242,9 +246,16 @@ function createRaftGenesisBlockConfig(result, cb){
 
   let genesisConfig = JSON.stringify(genesisTemplate)
 
-  fs.writeFile('./node_modules/mec/src/Quorum/quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
-    // result.communicationNetwork.genesisBlockConfigReady = true;
-    cb(err, result);
+  fs.access('./node_modules/mec/src/Quroum/quroum-genesis.json', (err) => {
+    if(err) {
+      fs.writeFile('./node_modules/mec/src/Quorum/quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
+        // result.communicationNetwork.genesisBlockConfigReady = true;
+        cb(err, result);
+      })
+    }
+    else {
+      cd(null, true);
+    }
   })
 }
 
@@ -273,9 +284,19 @@ function getEnodePubKey(cb){
 }
 
 function generateEnode(result, cb){
-  console.log('Generating node key')
-  if(result.consensus === 'raft'){
+  utils.Storage(`${config.identity.nodeName}/geth/nodekey`)
+  .then(() => {
+    getEnodePubKey(function(err, pubKey){
+      let enode = 'enode://'+pubKey+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp;
+      result.nodePubKey = pubKey;
+      result.enodeList = [enode];
+      cb(null, result);
+    });
+  })
+  .catch(() => {
+    console.log('Generating node key')
     let options = {encoding: 'utf8', timeout: 10*1000};
+<<<<<<< HEAD
     let child = exec(`bootnode -genkey Blockchain/${config.identity.nodeName}/geth/nodekey`, options)
       child.stderr.on('data', function(error){
         console.log('ERROR:', error)
@@ -294,20 +315,35 @@ function generateEnode(result, cb){
     console.log('ERROR: Invalid consensus choice')
     cb(null, null)
   }
+=======
+    let child = exec(`bootnode -genkey Blockchain/${config.identity.nodeName}/geth/nodekey`, options);
+    child.stderr.on('data', function(error){
+      console.log('ERROR:', error);
+    });
+    child.stdout.on('close', function(error){
+      getEnodePubKey(function(err, pubKey){
+        let enode = 'enode://'+pubKey+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp;
+        result.nodePubKey = pubKey;
+        result.enodeList = [enode];
+        cb(null, result);
+      })
+    });
+  })
+>>>>>>> constellation
 }
 
 function displayEnode(result, cb){
   let options = {encoding: 'utf8', timeout: 10*1000};
-  let child = exec(`bootnode -nodekey Blockchain/${config.identity.nodeName}/geth/nodekey -writeaddress`, options)
+  let child = exec(`bootnode -nodekey Blockchain/${config.identity.nodeName}/geth/nodekey -writeaddress`, options);
   child.stdout.on('data', function(data){
-    data = data.slice(0, -1)
-    let enode = 'enode://'+data+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp
-    console.log('\nenode:', enode+'\n')
-    cb(null, result)
+    data = data.slice(0, -1);
+    let enode = 'enode://'+data+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp;
+    console.log('\nenode:', enode+'\n');
+    cb(null, result);
   })
   child.stderr.on('data', function(error){
-    console.log('ERROR:', error)
-    cb(error, null)
+    console.log('ERROR:', error);
+    cb(error, null);
   })
 }
 
@@ -348,23 +384,29 @@ function handleExistingFiles(result, cb){
 }
 
 function createStaticNodeFile(enodeList, cb){
-  let options = {encoding: 'utf8', timeout: 100*1000};
-  let list = ''
-  for(let enode of enodeList){
-    list += '"'+enode+'",'
-  }
-  list = list.slice(0, -1)
-  let staticNodes = '['
-    + list
-    +']'
-  
-  fs.writeFile(`Blockchain/${config.identity.nodeName}/static-nodes.json`, staticNodes, function(err, res){
-    cb(err, res);
+  utils.Storage(`${config.identity.nodeName}/static-nodes.json`)
+  .then(() => {
+    cb(null, true);
+  })
+  .catch(() => {
+    let options = {encoding: 'utf8', timeout: 100*1000};
+    let list = ''
+    for(let enode of enodeList){
+      list += '"'+enode+'",'
+    }
+    list = list.slice(0, -1)
+    let staticNodes = '['
+      + list
+      +']'
+    
+    fs.writeFile(`Blockchain/${config.identity.nodeName}/static-nodes.json`, staticNodes, function(err, res){
+      cb(err, res);
+    });
   });
 }
 
 function getRaftConfiguration(result, cb){
-  if(setup.automatedSetup){
+  // if(setup.automatedSetup){
     if(setup.enodeList){
       result.enodeList = result.enodeList.concat(setup.enodeList) 
     } 
@@ -372,7 +414,23 @@ function getRaftConfiguration(result, cb){
       // result.communicationNetwork.staticNodesFileReady = true
       cb(err, result)
     })
+<<<<<<< HEAD
   } 
+=======
+  // } 
+  // else {
+  //   console.log('Please wait for others to join. Hit any key + enter once done.')
+  //   prompt.get(['done'] , function (err, answer) {
+  //     if(result.communicationNetwork && result.communicationNetwork.enodeList){
+  //       result.enodeList = result.enodeList.concat(result.communicationNetwork.enodeList) 
+  //     }
+  //     createStaticNodeFile(result.enodeList, function(err, res){
+  //       result.communicationNetwork.staticNodesFileReady = true
+  //       cb(err, result)
+  //     })
+  //   })
+  // }
+>>>>>>> constellation
 }
 
 function addAddresslistToQuorumConfig(result, cb){
@@ -394,8 +452,8 @@ function handleNetworkConfiguration(result, cb){
         getNewGethAccount,
         addAddresslistToQuorumConfig,
         createRaftGenesisBlockConfig,
-        // constellation.CreateNewKeys, 
-        // constellation.CreateConfig
+        constellation.CreateNewKeys, 
+        constellation.CreateConfig
       )
       seqFunction(result, function(err, res){
         if (err) { return console.log('ERROR', err) }
@@ -406,12 +464,20 @@ function handleNetworkConfiguration(result, cb){
       cb(null, null)
     }
 
+<<<<<<< HEAD
   // } else {
   //   console.log("here???")
   //   // result.communicationNetwork.genesisBlockConfigReady = true
   //   // result.communicationNetwork.staticNodesFileReady = true
   //   cb(null, result)
   // }
+=======
+  } else {
+    result.communicationNetwork.genesisBlockConfigReady = true
+    result.communicationNetwork.staticNodesFileReady = true
+    cb(null, result)
+  }
+>>>>>>> constellation
 }
 
 exports.Hex2a = hex2a

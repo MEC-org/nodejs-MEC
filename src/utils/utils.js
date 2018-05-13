@@ -6,7 +6,7 @@ function Storage(chain) {
   return new Promise((resolve,reject)=>{
     fs.access(`./Blockchain/${chain}`, (err)=>{
       if(!err) {
-        console.log('[INFO] The blockchain data folder successfully found' + '\n');
+        console.log(`[INFO] Blockchain storage for "${chain}" network found\n`);
         resolve(true);
       }
       else {
@@ -46,6 +46,9 @@ const nodeToName = (node)=>{
   }
 }
 
+/**
+ * TODO: make it with pinging ports
+ */
 function allocateFreePorts() {
   ++Q_config.ports.gethNode;
   ++Q_config.ports.gethNodeRPC;

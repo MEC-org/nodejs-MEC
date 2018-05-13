@@ -40,7 +40,7 @@ function init (password){
   });
   fs.mkdir(`./Blockchain`, (err) => {
     if(err)
-      console.log(err);
+      console.log(`[INFO] Blockchain space successfully found`)
     else
       console.log(`[INFO] Blockchain space successfully prepeared`);
   })
