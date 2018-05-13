@@ -22,16 +22,16 @@ function killallGethConstellationNode(cb){
 
 function clearDirectories(result, cb){
   let cmd = 'rm -rf';
-  for(let i in result.folders){
-    let folder = result.folders[i];
-    cmd += ' '+folder;    
-  }
   if(result.folders.includes('Blockchain') 
     && config.setup.deleteKeys === false 
     && fs.existsSync(`Blockchain/${config.identity.nodeName}/keystore`)
     && fs.existsSync(`Blockchain/${config.identity.nodeName}/geth/nodekey`)
   ){
     console.log(`[*] Backing up previous keys`)
+    for(let i in result.folders){
+      let folder = result.folders[i];
+      cmd += ' '+folder;    
+    }
     let backupKeys = `cp -r Blockchain/${config.identity.nodeName}/keystore . && cp Blockchain/${config.identity.nodeName}/geth/nodekey . && ` 
     cmd = backupKeys + cmd
   } else if(result.folders.includes('Blockchain')) {
@@ -47,21 +47,18 @@ function clearDirectories(result, cb){
 }
 
 function createDirectories(result, cb){
-  let cmd = 'mkdir -p';
-  for(let i in result.folders){
-    let folder = result.folders[i];
-    cmd += ' '+folder;    
+  let newKeystoreFolder;
+  if(
+    fs.existsSync('Blockchain') &&
+    fs.existsSync(`Blockchain/${config.identity.nodeName}`)
+  ) {
+    newKeystoreFolder = `mkdir -p Blockchain/${config.identity.nodeName}/keystore`;
+  } else if (fs.existsSync('Blockchain')) {
+    newKeystoreFolder = `mkdir -p Blockchain/${config.identity.nodeName}`;
+    newKeystoreFolder += ` && mkdir -p Blockchain/${config.identity.nodeName}/keystore`;
   }
-  if(result.folders.includes('Blockchain') && config.setup.deleteKeys === false 
-      && fs.existsSync('keystore') && fs.readdirSync('keystore').length > 0){
-    console.log('[*] Restoring previous keys')
-    let backupKeys = ` && mkdir -p Blockchain/${config.identity.nodeName}/keystore && mv keystore/* Blockchain/${config.identity.nodeName}/keystore/` 
-    backupKeys += ` && mv nodekey Blockchain/${config.identity.nodeName}/geth/ && rm -rf keystore` 
-    cmd = cmd + backupKeys
-  } else if(result.folders.includes('Blockchain')) {
-    console.log('[*] Not reusing old keys')
-  }
-  let child = exec(cmd, function(){
+  // let options = {encoding: 'utf8', timeout: 10*1000};
+  let child = exec(newKeystoreFolder, function(){
     cb(null, result);
   });
   child.stderr.on('data', function(error){
@@ -106,7 +103,7 @@ function createWeb3IPC(ipcProvider){
 function waitForRPCConnection(web3RPC, cb){
   web3RPC.eth.net.isListening(function(err, isListening){
     if(isListening === true){
-      console.log('[*] RPC connection established')
+      console.log('[INFO] RPC connection established')
       cb()
     } else {
       setTimeout(function(){
@@ -280,18 +277,19 @@ function generateEnode(result, cb){
   if(result.consensus === 'raft'){
     let options = {encoding: 'utf8', timeout: 10*1000};
     let child = exec(`bootnode -genkey Blockchain/${config.identity.nodeName}/geth/nodekey`, options)
-    child.stderr.on('data', function(error){
-      console.log('ERROR:', error)
-    })
-    child.stdout.on('close', function(error){
-      getEnodePubKey(function(err, pubKey){
-        let enode = 'enode://'+pubKey+'@'+result.localIpAddress+':'+ports.gethNode+
-          '?raftport='+ports.raftHttp
-        result.nodePubKey = pubKey
-        result.enodeList = [enode]
-        cb(null, result)
+      child.stderr.on('data', function(error){
+        console.log('ERROR:', error)
       })
-    })
+      child.stdout.on('close', function(error){
+        console.log("here 285?")
+        getEnodePubKey(function(err, pubKey){
+          let enode = 'enode://'+pubKey+'@'+result.localIpAddress+':'+ports.gethNode+
+            '?raftport='+ports.raftHttp
+          result.nodePubKey = pubKey
+          result.enodeList = [enode]
+          cb(null, result)
+        })
+      })
   } else {
     console.log('ERROR: Invalid consensus choice')
     cb(null, null)
@@ -337,7 +335,7 @@ function displayCommunicationEnode(result, cb){
 function handleExistingFiles(result, cb){
   if(result.keepExistingFiles == false){ 
     let seqFunction = async.seq(
-      clearDirectories,
+      // clearDirectories,
       createDirectories
     )
     seqFunction(result, function(err, res){
@@ -375,18 +373,6 @@ function getRaftConfiguration(result, cb){
       cb(err, result)
     })
   } 
-  // else {
-  //   console.log('Please wait for others to join. Hit any key + enter once done.')
-  //   prompt.get(['done'] , function (err, answer) {
-  //     if(result.communicationNetwork && result.communicationNetwork.enodeList){
-  //       result.enodeList = result.enodeList.concat(result.communicationNetwork.enodeList) 
-  //     }
-  //     createStaticNodeFile(result.enodeList, function(err, res){
-  //       result.communicationNetwork.staticNodesFileReady = true
-  //       cb(err, result)
-  //     })
-  //   })
-  // }
 }
 
 function addAddresslistToQuorumConfig(result, cb){
@@ -400,7 +386,7 @@ function addAddresslistToQuorumConfig(result, cb){
 }
 
 function handleNetworkConfiguration(result, cb){
-  if(result.keepExistingFiles == false){ 
+  // if(result.keepExistingFiles == false){ 
     let createGenesisBlockConfig = null
     if(result.consensus === 'raft'){
       let seqFunction = async.seq(
@@ -420,11 +406,12 @@ function handleNetworkConfiguration(result, cb){
       cb(null, null)
     }
 
-  } else {
-    // result.communicationNetwork.genesisBlockConfigReady = true
-    // result.communicationNetwork.staticNodesFileReady = true
-    cb(null, result)
-  }
+  // } else {
+  //   console.log("here???")
+  //   // result.communicationNetwork.genesisBlockConfigReady = true
+  //   // result.communicationNetwork.staticNodesFileReady = true
+  //   cb(null, result)
+  // }
 }
 
 exports.Hex2a = hex2a

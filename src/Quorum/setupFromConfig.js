@@ -5,15 +5,12 @@ const joinExistingRaft = require('./joinExistingRaftNetwork.js')
 
 function run(){
   return new Promise((resolve, reject) => {
-    console.log('[SetupFromConfig] Starting setup from config')
-    console.log('==== Setup config ====')
     console.log('[IP]', setup.localIpAddress)
     console.log('[NODE_NAME]', config.identity.nodeName)
     console.log('[COORDINATING_IP]', setup.remoteIpAddress)
     console.log('[CONSENSUS]', setup.consensus)
     console.log('[ROLE]', setup.role)
     console.log('[KEEP_FILES]', setup.keepExistingFiles)
-    console.log('==== Setup config ====')
 
     if(config.setup.consensus === 'raft'){
       if(config.setup.role === 'coordinator'){
