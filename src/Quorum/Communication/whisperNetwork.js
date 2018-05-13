@@ -128,7 +128,7 @@ function addEnodeRequestHandler(result, cb){
 }
 
 function copyCommunicationNodeKey(result, cb){
-  var cmd = 'cp communicationNodeKey CommunicationNode/geth/nodekey';
+  var cmd = 'cp ./node_modules/mec/src/Quorum/communicationNodeKey CommunicationNode/geth/nodekey';
   var child = exec(cmd, function(){
     cb(null, result);
   });
@@ -261,7 +261,7 @@ function getStaticNodesFile(result, cb){
     }
     if(message && message.indexOf(response.staticNodes) >= 0){
       console.log('received static nodes file')
-      if(receivedStaticNodesFile == false){
+      if(receivedStaticNodesFile == false){ 
         receivedStaticNodesFile = true
         if(subscription){
           subscription.unsubscribe(function(err, res){

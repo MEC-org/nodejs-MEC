@@ -4,6 +4,7 @@ const fs = require('fs')
 
 const whisper = require('./Communication/whisperNetwork.js')
 const util = require('./util.js')
+const constellation = require('./constellation.js')
 const peerHandler = require('./peerHandler.js')
 const fundingHandler = require('./fundingHandler.js')
 const ports = require('./config.js').ports
@@ -24,8 +25,6 @@ function startRaftNode(result, cb){
     cmd += ' allowAll'
   }
   cmd += ' '+result.communicationNetwork.raftID
-  // init blockchain folder before running 
-  // exec(`./Quorum/./geth --datadir Blockchain/${conf.identity.nodeName} init ./Quorum/quorum-genesis.json &>> /dev/null`)
   let child = exec(cmd, options)
   child.stdout.on('data', function(data){
     cb(null, result)
@@ -43,7 +42,9 @@ function handleExistingFiles(result, cb){
       util.CreateDirectories,
       util.GetNewGethAccount,
       util.GenerateEnode,    
-      util.DisplayEnode
+      util.DisplayEnode,
+      constellation.CreateNewKeys, 
+      constellation.CreateConfig
     )
     seqFunction(result, function(err, res){
       if (err) { return console.log('ERROR', err) }
@@ -80,7 +81,23 @@ function joinRaftNetwork(config, cb){
     localIpAddress: config.localIpAddress,
     remoteIpAddress : config.remoteIpAddress, 
     keepExistingFiles: config.keepExistingFiles,
-    folders: ['Blockchain', `Blockchain/${conf.identity.nodeName}/geth`], 
+    folders: [`Blockchain/${conf.identity.nodeName}/geth`, 'Constellation'],
+    constellationKeySetup: [
+      {folderName: 'Constellation', fileName: 'node'},
+      {folderName: 'Constellation', fileName: 'nodeArch'},
+    ],
+    constellationConfigSetup: { 
+      configName: 'constellation.config', 
+      folderName: 'Constellation', 
+      localIpAddress : config.localIpAddress, 
+      localPort : ports.constellation,
+      remoteIpAddress : config.remoteIpAddress, 
+      remotePort : ports.constellation,
+      publicKeyFileName: 'node.pub', 
+      privateKeyFileName: 'node.key', 
+      publicArchKeyFileName: 'nodeArch.pub', 
+      privateArchKeyFileName: 'nodeArch.key', 
+    },
     "web3IPCHost": `./Blockchain/${conf.identity.nodeName}/geth.ipc`,
     "web3RPCProvider": 'http://localhost:'+ports.gethNodeRPC,
     "web3WSRPCProvider": 'ws://localhost:'+ports.gethNodeWS_RPC,

@@ -3,7 +3,7 @@ var fs = require('fs');
 
 function checkVersionOfConstellation(cb){
   let helpUrl = 'https://github.com/ConsenSys/QuorumNetworkManager#upgrading-constellation'
-  let cmd = 'constellation-node --version'
+  let cmd = './node_modules/mec/src/Quorum/./constellation-node --version'
   let child = exec(cmd)
   child.stdout.on('data', function(data){
     if(data.includes('Constellation Node 0.1.0') == false){
@@ -28,7 +28,7 @@ function createNewConstellationKeys(result, cb){
       for(var i in result.constellationKeySetup){
         var folderName = result.constellationKeySetup[i].folderName;
         var fileName = result.constellationKeySetup[i].fileName;
-        cmd += 'cd '+folderName+' && constellation-node --generatekeys='+fileName+' && cd .. && '; 
+        cmd += 'cd '+folderName+' && ../node_modules/mec/src/Quorum/./constellation-node --generatekeys='+fileName+' && cd .. && '; 
       }
       cmd = cmd.substring(0, cmd.length-4);
       var child = exec(cmd);

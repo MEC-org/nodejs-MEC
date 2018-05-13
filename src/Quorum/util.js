@@ -3,6 +3,7 @@ const ps    = require('ps-node')
 const fs    = require('fs');
 const async = require('async')
 const utils = require('../utils/utils')
+let constellation = require('./constellation.js')
 
 const config   = require('./config.js')
 const ports    = config.ports
@@ -11,7 +12,7 @@ const setup    = config.setup
 function killallGethConstellationNode(cb){
   let cmd   = 'killall -9';
       cmd  += ' geth';
-      cmd  += ' constellation-node';
+      cmd  += ' ./node_modules/mec/src/Quorum/./constellation-node';
   let child = exec(cmd, function(){
     cb(null, null);
   });
@@ -73,6 +74,8 @@ function createDirectories(result, cb){
 
 
 function hex2a(hexx) {
+  const hex = hexx.toString();//force conversion
+  let str = '';
   for (let i = 0; i < hex.length; i += 2){
     str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
   }
@@ -200,7 +203,7 @@ function checkPreviousCleanExit(cb){
     }, 
     constellation: function(callback){
       ps.lookup({
-        command: 'constellation-node',
+        command: './node_modules/mec/src/Quorum/./constellation-node',
         psargs: 'ef'
       }, 
       function(err, resultList){
@@ -246,9 +249,16 @@ function createRaftGenesisBlockConfig(result, cb){
 
   let genesisConfig = JSON.stringify(genesisTemplate)
 
-  fs.writeFile('./node_modules/mec/src/Quorum/quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
-    // result.communicationNetwork.genesisBlockConfigReady = true;
-    cb(err, result);
+  fs.access('./node_modules/mec/src/Quroum/quroum-genesis.json', (err) => {
+    if(err) {
+      fs.writeFile('./node_modules/mec/src/Quorum/quorum-genesis.json', genesisConfig, 'utf8', function(err, res){
+        // result.communicationNetwork.genesisBlockConfigReady = true;
+        cb(err, result);
+      })
+    }
+    else {
+      cd(null, true);
+    }
   })
 }
 
@@ -378,7 +388,7 @@ function createStaticNodeFile(enodeList, cb){
 }
 
 function getRaftConfiguration(result, cb){
-  if(setup.automatedSetup){
+  // if(setup.automatedSetup){
     if(setup.enodeList){
       result.enodeList = result.enodeList.concat(setup.enodeList) 
     } 
@@ -386,7 +396,7 @@ function getRaftConfiguration(result, cb){
       // result.communicationNetwork.staticNodesFileReady = true
       cb(err, result)
     })
-  } 
+  // } 
   // else {
   //   console.log('Please wait for others to join. Hit any key + enter once done.')
   //   prompt.get(['done'] , function (err, answer) {
@@ -420,8 +430,8 @@ function handleNetworkConfiguration(result, cb){
         getNewGethAccount,
         addAddresslistToQuorumConfig,
         createRaftGenesisBlockConfig,
-        // constellation.CreateNewKeys, 
-        // constellation.CreateConfig
+        constellation.CreateNewKeys, 
+        constellation.CreateConfig
       )
       seqFunction(result, function(err, res){
         if (err) { return console.log('ERROR', err) }
@@ -433,8 +443,8 @@ function handleNetworkConfiguration(result, cb){
     }
 
   } else {
-    // result.communicationNetwork.genesisBlockConfigReady = true
-    // result.communicationNetwork.staticNodesFileReady = true
+    result.communicationNetwork.genesisBlockConfigReady = true
+    result.communicationNetwork.staticNodesFileReady = true
     cb(null, result)
   }
 }
