@@ -1,8 +1,7 @@
 const exec = require('child_process').exec,
    Web3Gen = require('./Web3Generator.js'),
     Quorum = require('../Quorum/setupFromConfig.js'),
-  Q_config = require('../Quorum/config.js'),
-      keys = require('../appStructure/keyElements.js').keyElements;
+  Q_config = require('../Quorum/config.js');
 
 // running new semi-private chain
 class SemiPrivateChain {
@@ -17,7 +16,7 @@ class SemiPrivateChain {
       ++Q_config.ports.gethNodeRPC;
       Quorum.run()
       .then(() => { resolve(true); })
-      .catch(err => { console.log("") });
+      .catch(err => { console.log(err) });
     });
   }
 
