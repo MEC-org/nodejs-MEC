@@ -2,10 +2,8 @@ const Web3Gen = require('../utils/Web3Generator.js'),
        makers = require('../utils/Makers.js'),
          keys = require('../appStructure/keyElements.js').keyElements,
          cons = require('../utils/connectConsortium.js'),
-           tx = require('../utils/tx.js'),
         utils = require('../utils/utils.js'),
      Accounts = require('../utils/accManag.js').Accounts,
-            Q = require('../Quorum/setupFromConfig.js'),
      Q_config = require('../Quorum/config'),
            fs = require('fs');
 
@@ -18,19 +16,12 @@ const infura_main = 'https://mainnet.infura.io/vsHV6WQMTF9hk5HOdoOx',
    infura_rinkeby = 'https://rinkeby.infura.io/vsHV6WQMTF9hk5HOdoOx',
      infura_kovan = 'https://kovan.infura.io/vsHV6WQMTF9hk5HOdoOx';
 
-// keys.infura = Web3Gen.newRemoteProvider(infura_main);
-// let path = `http://localhost:${keys.ports}`
 keys.infura = Web3Gen.newRemoteProvider(infura_kovan);
-// keys.infura = makers.newWeb3Provider(path);
 
 /* * * * * * * * * * * * * * * * * * * * * *  * * * * * *
   By this function I'm getting from mainnet
   MEC Smart contract which contains networks ids
  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
- /* * * * * * * * * * * * * ** * * * * * * ** * * * * * *
-  Add functions to catch update event in subnet and
-  rewrite CP.Getter variable with new ABI and address
-  *  * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 function init (password){
     const abi = require('../../build/contracts/Getter.json'),
           adr = '0x0f5deec9e85cddb24900efffe2b2acbf5a37ebb3';
@@ -47,117 +38,6 @@ function init (password){
         return;
       }
     });
-}
-
-function getNetworks() {
-  return new Promise((resolve,reject)=>{
-    let response = [];
-    const obj = keys.setup.Getter;
-
-    obj.methods.getAllNets()
-    .call({
-      from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
-    })
-    .then(nets => {
-
-      if(!nets.length) console.log("[ERROR] Something goes wrong, no nets found!");
-      if(nets.length == 1) {
-        prepeareNetworksObject(nets[0]).then(lastAVnet=>{
-          response.push(lastAVnet);
-        });
-      } else if(nets.length != 1) {
-        const check = () => {
-          if(response.length == nets.length)
-            resolve(response);
-          else  
-            return false;
-        }
-        for(let i=0; i<nets.length; i++) {
-          prepeareNetworksObject(nets[i])
-          .then(lastAVnet => {
-            response.push(lastAVnet);
-            check();
-          })
-          .catch((err)=>{
-            console.log("[ERROR] Something goes wrong: %s", err);
-          })
-        }
-      }
-    })
-    .catch(err => {
-      reject(err);
-    })
-  });
-}
-
-/* Getting only 1 network */
-function search(name) {
-  return new Promise((resolve,reject)=>{
-    keys.setup.Getter.methods.getUserEnodeUrl(utils.asciiToHex(name), '0x3d41d04f27efe6e837dce30f3412f98c9ade47ef')
-    .call({
-      from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
-    })
-    .then(res => {
-      setNewAvailableNetwork(res, name)
-      .then(ANobj=>{
-        resolve(ANobj);
-      })
-      .catch(err=>{ reject(err); });
-    })
-    .catch(err => {
-      reject(err);
-    })
-  });
-}
-
-function getInterface() {
-  return new Promise((resolve,reject)=>{
-    getNetworks()
-    .then(net=>{
-      resolve(net);
-    })
-    .catch(error => {
-      reject(error);
-    })
-  });
-}
-
-function prepeareNetworksObject(net) {
-  // only for proto, later it will be with array
-  // prepeare for each network
-  return new Promise((resolve,reject)=>{
-    keys.setup.Getter.methods.getUserEnodeUrl(utils.asciiToHex(net), "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef")
-    .call({
-      from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
-    })
-    .then(node => {
-      if(err) reject(err);
-      else {
-        const name = utils.fromHex(net);
-        setNewAvailableNetwork(node, name)
-        .then(ANobj=>{
-          resolve(ANobj);
-        })
-        .catch(err=>{ reject(err); })
-      }
-    })
-    .catch(err => {
-      reject(err);
-    });
-  });
-}
-
-function setNewAvailableNetwork(node, name) {
-  return new Promise((resolve,reject)=>{
-    keys.AVAILABLE_NETWORKS
-    .push({
-      name: name,
-      enode: utils.fromHex(node),
-    });
-    const obj = keys.AVAILABLE_NETWORKS;
-    console.log(`[INFO] Successfully added new "${name}" network`);
-    resolve(obj[obj.length-1]);
-  });
 }
 
 function setIpcProvider(path) {
@@ -225,8 +105,6 @@ function initMEC(network, rpc) {
 
 module.exports = {
   init,
-  getInterface,
   start,
-  search,
   setIpcProvider
 }
