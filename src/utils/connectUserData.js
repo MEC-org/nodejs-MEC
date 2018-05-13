@@ -6,7 +6,7 @@ const      k = require('../appStructure/keyElements.js').keyElements,
 
 class Getter {
   constructor() {
-    this.co = k._INIT.Getter;
+    this.co = k.setup.Getter;
   }
 
   setNode(name, address) {

@@ -25,118 +25,36 @@ function connectConsortium(params) {
   return new Promise((r,e)=>{
     const who = params.network,
           net = getNetObjByName(who);
+    
+    console.log(`[INFO] Connecting consortium node with given params:`);
     console.log(params);
-
 
     chain = m.newWeb3Provider(params.server).eth;
 
-    // periodic function do catch transaction and mine, valid for POW
-    // p.listener(who)
-
     const old = keys.accounts.password,
           acc = Acc(chain, old, who);
+
     keys.accounts = acc;
-    console.log(acc.my());
+    acc.my().then(account => {
+  
+      console.log(`\n[INFO] Account ${account} identified in "${who}" network`);    
 
-    if(typeof(acc.my()) == 'undefined') {
-      acc.createAccount()
-        .then(r=>{ console.log(r); })
-        .catch(e=>{ console.log(e); });
-    }
-
-    acc.unlockAcc()
-      .then(r=>{ console.log(r); })
-      .catch(e=>{ console.log(e); })
-
-    if(!params.node) {
-      r(true);
-    }
-
-    keys.ipc[who].admin.addPeer(params.node, (err,res)=>{
-      if(err) e(err);
-      else {
-        console.log(`INFO: Successfully connected to ${params.node}`);
-        console.log(net.address);
-
-        getConsortiumService(chain, net.address, net.abi)
-          .then((service)=>{
-
-            // Setting CUSTOM_NODE
-            prepeareCustomNodeObject({
-              name: who,
-              chainClient: keys.ipc[who],
-              service: service
-            });
-
-            // init new app class
-            // initialize tx class
-            const app = new App("signup"),
-                   tx = new Tx(app),
-                  rep = tx.use("name", '');
-            console.log(`INFO: Successfully connected to ${rep}`);
-            r(true);
-        })
-        .catch((err)=>{console.log(err)});
+      if(typeof(account) == 'undefined') {
+        console.log(`[WARN] Accounts not found in "${who}" network`);
+        /* THIS IS NOT GOOD FOR ACCOUNT CREATION */
+        // acc.createAccount()
+        // .then(r=>{ console.log(r); })
+        // .catch(e=>{ console.log(e); });
       }
+  
+      acc.unlockAcc()
+      .then(() => {
+        console.log(`[INFO] Account successfully unlocked`);
+      })
+      .catch(e => { console.log(e); })
     });
-
   });
 }
-
-function prepeareCustomNodeObject(data) {
-  keys.CUSTOM_NODES[data.name] = {
-    chainClient: data.chainClient,
-    service: data.service
-  };
-}
-
-function getConsortiumService(chain, address, abi) {
-  return new Promise((resolve,reject)=>{
-
-    const getter = chain.contract(abi).at(address);
-
-    prepeareCustomNodeObject({
-      name: 'getter',
-      chainClient: chain,
-      service: getter
-    });
-
-    const creator = ()=>{
-      prepeareServiceObject()
-        .then((res)=>{
-          const abi = JSON.parse(res[0]);
-          const app = chain.contract(abi).at(res[1]);
-          setTimeout(()=>{ resolve(app); }, 500);
-        })
-        .catch((err)=>{ throw err });
-    }
-
-    creator();
-
-  });
-}
-
-function prepeareServiceObject() {
-  return new Promise((resolve,reject)=>{
-    let abi, address;
-
-    const getter = new App('getter'),
-              tx = new Tx(getter);
-
-    tx.use("_adr", '').then(addr=>{
-      address =  addr;
-    });
-    tx.use('abidata', '').then(int=>{
-      abi = int;
-    });
-
-    setTimeout(()=>{
-      resolve([abi,address])
-    }, 1000);
-
-  });
-}
-
 
 module.exports = {
   consortium_params,

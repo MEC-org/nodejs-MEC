@@ -47,13 +47,12 @@ class accounts {
     return new Promise((r,e)=>{
       this.my()
       .then(account => {
-      this.node.personal.unlockAccount(account, this.password, (err,res)=>{
+      console.log(`[INFO] Unlocking account with given passphrase`)
+      this.node.personal.unlockAccount(account, this.password, 3600, (err,res)=>{
         if(err) {
-          console.log(err);
           e(err);
         }
         else {
-          console.log(res);
           this.node.eth.defaultAccount = account;
           r(res);
         }

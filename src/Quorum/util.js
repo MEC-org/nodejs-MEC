@@ -157,7 +157,7 @@ function connectToPeer(result, cb){
 
 function getNewGethAccount(result, cb, chain){
   let options = {encoding: 'utf8', timeout: 10*1000};
-  let child = exec(`./node_modules/mec/src/Quorum/./geth --datadir Blockchain/${config.identity.nodeName} account new`, options);
+  let child = exec(`./node_modules/mec/src/Quorum/./geth --datadir Blockchain/${config.identity.nodeName} account new --password ./passwordfile`, options);
   child.stdout.on('data', function(data){
     if(data.indexOf('Your new account') >= 0){
       child.stdin.write('\n');

@@ -6,7 +6,8 @@ const Web3Gen = require('../utils/Web3Generator.js'),
         utils = require('../utils/utils.js'),
      Accounts = require('../utils/accManag.js').Accounts,
             Q = require('../Quorum/setupFromConfig.js'),
-     Q_config = require('../Quorum/config');
+     Q_config = require('../Quorum/config'),
+           fs = require('fs');
 
 // Main Ethereum Network
 // Test Ethereum Network (Ropsten)
@@ -34,18 +35,24 @@ function init (password){
     const abi = require('../../build/contracts/Getter.json'),
           adr = '0x0f5deec9e85cddb24900efffe2b2acbf5a37ebb3';
 
-    keys._INIT.Getter = new keys.infura.eth.Contract(abi.abi);
-    keys._INIT.Getter._address = adr;
+    keys.setup.Getter = new keys.infura.eth.Contract(abi.abi);
+    keys.setup.Getter._address = adr;
 
     keys.accounts = Accounts('', password, '');
-    console.log(`[INFO] Initialization was successful`);
-    return;
+    fs.writeFile(`./passwordfile`, password, (err) => {
+      if(err)
+        console.log(err);
+      else {
+        console.log(`[INFO] Initialization was successful`);
+        return;
+      }
+    });
 }
 
 function getNetworks() {
   return new Promise((resolve,reject)=>{
     let response = [];
-    const obj = keys._INIT.Getter;
+    const obj = keys.setup.Getter;
 
     obj.methods.getAllNets()
     .call({
@@ -55,13 +62,11 @@ function getNetworks() {
 
       if(!nets.length) console.log("[ERROR] Something goes wrong, no nets found!");
       if(nets.length == 1) {
-        // getNode()
         prepeareNetworksObject(nets[0]).then(lastAVnet=>{
           response.push(lastAVnet);
         });
       } else if(nets.length != 1) {
         const check = () => {
-          // console.log(response.length)
           if(response.length == nets.length)
             resolve(response);
           else  
@@ -80,7 +85,6 @@ function getNetworks() {
       }
     })
     .catch(err => {
-      // console.log(err);
       reject(err);
     })
   });
@@ -89,12 +93,11 @@ function getNetworks() {
 /* Getting only 1 network */
 function search(name) {
   return new Promise((resolve,reject)=>{
-    keys._INIT.Getter.methods.getUserEnodeUrl(utils.asciiToHex(name), '0x3d41d04f27efe6e837dce30f3412f98c9ade47ef')
+    keys.setup.Getter.methods.getUserEnodeUrl(utils.asciiToHex(name), '0x3d41d04f27efe6e837dce30f3412f98c9ade47ef')
     .call({
       from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
     })
     .then(res => {
-      // console.log(res);
       setNewAvailableNetwork(res, name)
       .then(ANobj=>{
         resolve(ANobj);
@@ -102,7 +105,6 @@ function search(name) {
       .catch(err=>{ reject(err); });
     })
     .catch(err => {
-      // console.log(err);
       reject(err);
     })
   });
@@ -124,7 +126,7 @@ function prepeareNetworksObject(net) {
   // only for proto, later it will be with array
   // prepeare for each network
   return new Promise((resolve,reject)=>{
-    keys._INIT.Getter.methods.getUserEnodeUrl(utils.asciiToHex(net), "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef")
+    keys.setup.Getter.methods.getUserEnodeUrl(utils.asciiToHex(net), "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef")
     .call({
       from: "0x3d41d04f27efe6e837dce30f3412f98c9ade47ef"
     })
@@ -140,7 +142,6 @@ function prepeareNetworksObject(net) {
       }
     })
     .catch(err => {
-      // console.log(err);
       reject(err);
     });
   });
@@ -169,11 +170,9 @@ function start(network) {
     .then(()=>{
       initMEC(network, true)
       .then(mes=>{
-        // console.log(mes);
         resolve(mes);
       })
       .catch((err)=>{
-        // console.log(err);
       });
     })
     .catch(()=>{
@@ -186,7 +185,7 @@ function start(network) {
         resolve(mes);
       })
       .catch((err)=>{
-        // console.log(err);
+        reject(err);
       });
     });
   });
@@ -198,25 +197,29 @@ function initMEC(network, rpc) {
       const chain = new makers.SemiPrivateChain(network),
              path = `./Blockchain/${network}/./geth.ipc`;
       utils.allocateFreePorts();
-      chain.setup();
-
-      keys.ipc[network] = setIpcProvider(path);
-
-      cons.connectConsortium(
-        cons.consortium_params(
-          utils.nameToEnode(network),
-          network,
-          Q_config.ports.gethNodeRPC,
-          `http://localhost:${Q_config.ports.gethNodeRPC}`
+      chain.setup().then(() => {
+        
+        keys.ipc[network] = setIpcProvider(path);
+        cons.connectConsortium(
+          cons.consortium_params(
+            utils.nameToEnode(network),
+            network,
+            Q_config.ports.gethNodeRPC,
+            `http://localhost:${Q_config.ports.gethNodeRPC}`
+          )
         )
-      )
-      .then(mes=>{
-        resolve(mes);
-       })
-      .catch((err)=>{
-        console.log("[ERROR] Some error with adding peer. Try to debug, input data: " + enode);
+        .then(mes=>{
+          resolve(mes);
+        })
+        .catch((err)=>{
+          console.log("[ERROR] Some error with adding peer. Try to debug, input data: " + enode);
+          reject(err);
+        });
+      })
+      .catch(err => {
         reject(err);
       });
+ 
     });
 }
 
