@@ -2,6 +2,7 @@ const exec  = require('child_process').exec
 const ps    = require('ps-node')
 const fs    = require('fs');
 const async = require('async')
+const utils = require('../utils/utils')
 
 const config   = require('./config.js')
 const ports    = config.ports
@@ -276,40 +277,45 @@ function getEnodePubKey(cb){
 }
 
 function generateEnode(result, cb){
-  console.log('Generating node key')
-  if(result.consensus === 'raft'){
+  utils.Storage(`${config.identity.nodeName}/geth/nodekey`)
+  .then(() => {
+    getEnodePubKey(function(err, pubKey){
+      let enode = 'enode://'+pubKey+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp;
+      result.nodePubKey = pubKey;
+      result.enodeList = [enode];
+      cb(null, result);
+    });
+  })
+  .catch(() => {
+    console.log('Generating node key')
     let options = {encoding: 'utf8', timeout: 10*1000};
-    let child = exec(`bootnode -genkey Blockchain/${config.identity.nodeName}/geth/nodekey`, options)
+    let child = exec(`bootnode -genkey Blockchain/${config.identity.nodeName}/geth/nodekey`, options);
     child.stderr.on('data', function(error){
-      console.log('ERROR:', error)
-    })
+      console.log('ERROR:', error);
+    });
     child.stdout.on('close', function(error){
       getEnodePubKey(function(err, pubKey){
-        let enode = 'enode://'+pubKey+'@'+result.localIpAddress+':'+ports.gethNode+
-          '?raftport='+ports.raftHttp
-        result.nodePubKey = pubKey
-        result.enodeList = [enode]
-        cb(null, result)
+        let enode = 'enode://'+pubKey+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp;
+        result.nodePubKey = pubKey;
+        result.enodeList = [enode];
+        cb(null, result);
       })
-    })
-  } else {
-    console.log('ERROR: Invalid consensus choice')
-    cb(null, null)
-  }
+    });
+  })
 }
 
 function displayEnode(result, cb){
   let options = {encoding: 'utf8', timeout: 10*1000};
-  let child = exec(`bootnode -nodekey Blockchain/${config.identity.nodeName}/geth/nodekey -writeaddress`, options)
+  let child = exec(`bootnode -nodekey Blockchain/${config.identity.nodeName}/geth/nodekey -writeaddress`, options);
   child.stdout.on('data', function(data){
-    data = data.slice(0, -1)
-    let enode = 'enode://'+data+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp
-    console.log('\nenode:', enode+'\n')
-    cb(null, result)
+    data = data.slice(0, -1);
+    let enode = 'enode://'+data+'@'+result.localIpAddress+':'+ports.gethNode+'?raftport='+ports.raftHttp;
+    console.log('\nenode:', enode+'\n');
+    cb(null, result);
   })
   child.stderr.on('data', function(error){
-    console.log('ERROR:', error)
-    cb(error, null)
+    console.log('ERROR:', error);
+    cb(error, null);
   })
 }
 
@@ -350,18 +356,24 @@ function handleExistingFiles(result, cb){
 }
 
 function createStaticNodeFile(enodeList, cb){
-  let options = {encoding: 'utf8', timeout: 100*1000};
-  let list = ''
-  for(let enode of enodeList){
-    list += '"'+enode+'",'
-  }
-  list = list.slice(0, -1)
-  let staticNodes = '['
-    + list
-    +']'
-  
-  fs.writeFile(`Blockchain/${config.identity.nodeName}/static-nodes.json`, staticNodes, function(err, res){
-    cb(err, res);
+  utils.Storage(`${config.identity.nodeName}/static-nodes.json`)
+  .then(() => {
+    cb(null, true);
+  })
+  .catch(() => {
+    let options = {encoding: 'utf8', timeout: 100*1000};
+    let list = ''
+    for(let enode of enodeList){
+      list += '"'+enode+'",'
+    }
+    list = list.slice(0, -1)
+    let staticNodes = '['
+      + list
+      +']'
+    
+    fs.writeFile(`Blockchain/${config.identity.nodeName}/static-nodes.json`, staticNodes, function(err, res){
+      cb(err, res);
+    });
   });
 }
 

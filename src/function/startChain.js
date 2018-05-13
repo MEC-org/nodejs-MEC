@@ -24,7 +24,7 @@ keys.infura = Web3Gen.newRemoteProvider(infura_kovan);
  * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function init (password){
   const abi = require('../../build/contracts/Getter.json'),
-        adr = '0x0f5deec9e85cddb24900efffe2b2acbf5a37ebb3';
+        adr = '0x7e04326ed667d822158388123208a085dac6df10';
 
   keys.setup.Getter = new keys.infura.eth.Contract(abi.abi);
   keys.setup.Getter._address = adr;
@@ -40,7 +40,7 @@ function init (password){
   });
   fs.mkdir(`./Blockchain`, (err) => {
     if(err)
-      console.log(err);
+      console.log(`[INFO] Blockchain space successfully found`)
     else
       console.log(`[INFO] Blockchain space successfully prepeared`);
   })
